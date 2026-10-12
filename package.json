@@ -1,0 +1,43 @@
+{
+  "name": "poco-drinkery",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "decimal.js": "^10.6.0",
+    "dexie": "^4.4.6",
+    "exceljs": "^4.4.0",
+    "lucide-react": "^1.46.0",
+    "next": "^16.4.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "read-excel-file": "^9.3.12",
+    "sharp": "^0.35.5",
+    "source-map-js": "^1.2.2",
+    "zod": "^4.6.6"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^16.4.0",
+    "fake-indexeddb": "^6.2.5",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^5.0.3"
+  },
+  "overrides": {
+    "uuid": "^11.1.1"
+  }
+}

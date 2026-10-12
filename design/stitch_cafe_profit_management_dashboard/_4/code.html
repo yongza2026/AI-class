@@ -1,0 +1,720 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><title>Prep Cafe Operations &amp; Ledger System</title><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-container-low": "#eff4ff",
+          "error": "#ba1a1a",
+          "surface-tint": "#74584e",
+          "on-tertiary-fixed": "#001d31",
+          "on-surface-variant": "#504440",
+          "primary": "#090100",
+          "tertiary-fixed": "#cce5ff",
+          "on-error-container": "#93000a",
+          "surface-bright": "#f8f9ff",
+          "tertiary-fixed-dim": "#93ccff",
+          "background": "#f8f9ff",
+          "surface-dim": "#cbdbf5",
+          "on-error": "#ffffff",
+          "on-surface": "#0b1c30",
+          "on-primary-fixed": "#2a170f",
+          "on-tertiary-fixed-variant": "#004b73",
+          "secondary-fixed": "#ffdbca",
+          "inverse-primary": "#e3bfb2",
+          "surface": "#f8f9ff",
+          "primary-fixed-dim": "#e3bfb2",
+          "surface-container-lowest": "#ffffff",
+          "inverse-on-surface": "#eaf1ff",
+          "inverse-surface": "#213145",
+          "on-secondary-container": "#682c00",
+          "on-secondary-fixed-variant": "#763300",
+          "surface-container-high": "#dce9ff",
+          "surface-variant": "#d3e4fe",
+          "tertiary": "#000308",
+          "tertiary-container": "#001f34",
+          "outline-variant": "#d3c3be",
+          "secondary-fixed-dim": "#ffb68e",
+          "secondary": "#9b4500",
+          "on-primary": "#ffffff",
+          "primary-fixed": "#ffdbce",
+          "on-secondary-fixed": "#331200",
+          "on-primary-container": "#9e7e73",
+          "on-secondary": "#ffffff",
+          "on-tertiary-container": "#1b8ccf",
+          "surface-container": "#e5eeff",
+          "on-background": "#0b1c30",
+          "outline": "#827470",
+          "secondary-container": "#fd8a42",
+          "on-primary-fixed-variant": "#5a4137",
+          "on-tertiary": "#ffffff",
+          "primary-container": "#2c1810",
+          "surface-container-highest": "#d3e4fe",
+          "error-container": "#ffdad6"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "space-sm": "0.5rem",
+          "space-md": "0.75rem",
+          "space-xl": "1.5rem",
+          "gutter-compact": "0.5rem",
+          "space-lg": "1rem",
+          "margin-mobile": "1rem",
+          "gutter": "1rem",
+          "space-xs": "0.25rem",
+          "margin": "1.5rem"
+        },
+        "fontFamily": {
+          "body-lg": ["Inter"],
+          "data-table": ["Inter"],
+          "body-sm": ["Inter"],
+          "data-metric": ["Inter"],
+          "body-md": ["Inter"],
+          "headline-xl": ["Inter"],
+          "headline-lg": ["Inter"],
+          "data-mono": ["JetBrains Mono"],
+          "headline-md": ["Inter"],
+          "label-sm": ["Inter"],
+          "label-md": ["Inter"],
+          "headline-sm": ["Inter"]
+        },
+        "fontSize": {
+          "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+          "data-table": ["13px", {"lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400"}],
+          "body-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400"}],
+          "data-metric": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+          "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600"}],
+          "data-mono": ["12px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "500"}],
+          "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "600"}],
+          "label-md": ["13px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+          "headline-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}]
+        }
+      }
+    }
+  }</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-margin flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-md"><img alt="Prep Cafe Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XERa08ngvAj5NXppFF8c8UDyMYX7JS6fiylapjtDkP9NiJ7zQmP0ne5NoJ_CkMMvUc34hYHmtb4IB7DcxNhnveMMzKpo3YQVacoLC8gvxCQYcnf30D-pQWMBxk9UnGBhoaMDakqcZSvlhrnb3pgiJFmsRq-G2_Cxc2cN2gU6N9CsmJeArkm77U3g341Ivbd6I8snkoMgcHMgBySQ0R9vjwV6rL3kzAXiANAK5tBTDrErOKva_k_HWHyAM"><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-primary tracking-tight">프렙 카페</span><span class="font-label-sm text-label-sm text-on-surface-variant font-mono">POS &amp; LEDGER</span></div></div></div><div class="hidden xl:flex items-center gap-space-xs px-space-md py-space-xs rounded-xl bg-surface-container-low"><span class="w-2 h-2 rounded-full bg-secondary"></span><span class="font-label-sm text-label-sm text-on-surface font-medium">영업중</span><span class="text-on-surface-variant font-label-sm text-label-sm">·</span><span class="font-data-mono text-data-mono text-on-surface-variant">2026-09-18 마감완료</span></div><nav class="hidden lg:flex items-center gap-space-xs px-space-xs bg-surface-container-low p-1 rounded-xl" data-active-classes="bg-primary-container text-on-primary font-semibold rounded-lg shadow-sm"><a class="px-space-md py-1.5 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="dashboard-and-profit" href="#">대시보드 &amp; 손익</a><a class="px-space-md py-1.5 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="sales-ledger" href="#">판매 기록 관리</a><a class="px-space-md py-1.5 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="menu-profitability" href="#">메뉴별 수익성</a><a aria-current="page" class="px-space-md py-1.5 transition-colors bg-primary-container text-on-primary font-semibold rounded-lg shadow-sm" data-path="inventory-and-stock" href="#">재고 현황 &amp; 흐름</a><a class="px-space-md py-1.5 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="expense-ledger" href="#">비용 기록 관리</a><a class="px-space-md py-1.5 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="data-sync-and-status" href="#">데이터 관리</a></nav></div><div class="flex items-center gap-space-md"><div class="hidden sm:flex items-center gap-space-xs"><button class="px-space-md py-1.5 rounded-lg bg-secondary text-on-secondary font-label-md text-label-md hover:bg-secondary-container hover:text-on-secondary-container transition-all flex items-center gap-space-xs" type="button"><span class="material-symbols-outlined text-[16px]">point_of_sale</span>판매 입력</button><button class="px-space-md py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-container-highest hover:text-on-surface transition-all flex items-center gap-space-xs" type="button"><span class="material-symbols-outlined text-[16px]">inventory_2</span>재고 기록</button></div><div class="flex items-center gap-space-xs px-space-md py-1 rounded-lg bg-surface-container-low"><span class="material-symbols-outlined text-secondary text-[18px]">store</span><span class="font-label-md text-label-md text-on-surface font-medium hidden md:inline">프렙 카페 본점</span></div><div class="flex items-center gap-space-xs pl-space-xs"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-sm text-label-sm text-on-surface font-semibold">매니저 박지훈</span><span class="font-data-mono text-[10px] text-on-surface-variant leading-none">SHIFT LEADER</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-surface min-h-[calc(100vh-4rem)]"><div class="flex flex-col w-full">
+<!-- Top Utility Bar: Page Header & Quick Summary -->
+<div class="w-full px-margin py-space-lg flex flex-col md:flex-row md:items-center md:justify-between gap-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span>프렙 물류 관리</span>
+<span>/</span>
+<span class="text-primary font-medium">재고 원장 (Inventory Ledger)</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight mt-0.5">
+        재료별 재고 현황 &amp; 흐름 관리
+      </h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+        총 11개 원재료 정밀 수불부 · 실시간 레시피 소진 추적 엔진 연동 중
+      </p>
+</div>
+<!-- Right Summary Metrics & Primary Action -->
+<div class="flex items-center gap-space-md flex-wrap">
+<div class="flex items-center gap-space-lg bg-surface-container-lowest px-space-md py-space-sm rounded-xl shadow-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">부족 경고 품목</span>
+<div class="flex items-center gap-space-xs mt-0.5">
+<span class="font-data-metric text-headline-sm text-error">3개</span>
+<span class="font-data-mono text-[11px] text-error">긴급 발주 요망</span>
+</div>
+</div>
+<div class="w-px h-8 bg-surface-container"></div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">오늘 입고 완료</span>
+<div class="flex items-center gap-space-xs mt-0.5">
+<span class="font-data-metric text-headline-sm text-secondary">2건</span>
+<span class="font-data-mono text-[11px] text-on-surface-variant">100,000 ml/g</span>
+</div>
+</div>
+</div>
+<button class="px-space-md py-2.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-all flex items-center gap-space-xs shadow-md" id="btnOpenModal" type="button">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span>재고 변동 기록 추가</span>
+</button>
+</div>
+</div>
+<!-- Primary Formula Calculation Banner (Strict Inventory Math Legend) -->
+<div class="w-full px-margin pb-space-lg">
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm flex-wrap text-on-surface">
+<div class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg bg-surface-container-low font-data-mono text-data-mono text-on-surface">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span>[기초재고]</span>
+</div>
+<span class="font-data-mono text-secondary font-bold">+</span>
+<div class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg bg-surface-container-high font-data-mono text-data-mono text-secondary font-semibold">
+<span>[입고(+)]</span>
+</div>
+<span class="font-data-mono text-error font-bold">-</span>
+<div class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg bg-surface-container-low font-data-mono text-data-mono text-on-surface-variant">
+<span>[판매소진(레시피)]</span>
+</div>
+<span class="font-data-mono text-error font-bold">-</span>
+<div class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg bg-surface-container-low font-data-mono text-data-mono text-error">
+<span>[폐기(-)]</span>
+</div>
+<span class="font-data-mono text-primary font-bold">±</span>
+<div class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg bg-surface-container-low font-data-mono text-data-mono text-primary">
+<span>[실사조정]</span>
+</div>
+<span class="font-data-mono text-primary font-bold">=</span>
+<div class="flex items-center gap-1.5 px-space-md py-1 rounded-lg bg-primary-container text-on-primary font-data-mono text-data-mono font-semibold">
+<span>[예상 잔량]</span>
+</div>
+</div>
+<!-- Separation notice badge (PRD 2.2 strict rule) -->
+<div class="flex items-center gap-space-xs px-space-md py-1 rounded-lg bg-surface-container-high text-on-surface text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified</span>
+<span><strong>원칙:</strong> [실사 수량]과 [예상 잔량]은 분리 표기되며 실사 차이는 조정 항목으로 귀속됩니다.</span>
+</div>
+</div>
+</div>
+<!-- Operational Overview Section: Table & Auxiliary Visuals -->
+<div class="w-full px-margin pb-space-xl flex flex-col gap-space-lg">
+<!-- Filter Bar & View Segment -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md bg-surface-container-lowest p-space-sm rounded-xl shadow-sm">
+<div class="flex items-center gap-space-xs w-full sm:w-auto">
+<button class="px-space-md py-1.5 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm">전체 원부재료 (11)</button>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm">원두 및 음료 베이스 (5)</button>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm">베이커리 생지 (1)</button>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm">일회용기 &amp; 소모품 (5)</button>
+</div>
+<div class="flex items-center gap-space-sm w-full sm:w-auto justify-end">
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm bg-surface-container-low px-space-md py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>기준일: 2026-09-18 마감 기준</span>
+</div>
+<button class="p-1.5 rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors" title="데이터 새로고침">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+</button>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="w-full bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider h-10 select-none">
+<th class="px-space-md py-2 font-medium">원재료명</th>
+<th class="px-space-sm py-2 font-medium">단위</th>
+<th class="px-space-md py-2 font-medium text-right">기초 재고</th>
+<th class="px-space-md py-2 font-medium text-right text-secondary">입고 (+)</th>
+<th class="px-space-md py-2 font-medium text-right">판매 소진</th>
+<th class="px-space-md py-2 font-medium text-right text-error">폐기 (-)</th>
+<th class="px-space-md py-2 font-medium text-right">실사 조정</th>
+<th class="px-space-md py-2 font-medium text-right bg-surface-container-high/60 text-on-surface font-semibold">예상 잔량</th>
+<th class="px-space-md py-2 font-medium text-right">안전 재고</th>
+<th class="px-space-md py-2 font-medium text-center">재고 건전성 상태</th>
+<th class="px-space-md py-2 font-medium text-center">실사/조정</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-body-md font-body-md">
+<!-- 1. 에스프레소 원두 -->
+<tr class="hover:bg-surface-container-low transition-colors bg-error-container/10">
+<td class="px-space-md py-space-sm font-medium text-primary flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>에스프레소 원두</span>
+</td>
+<td class="px-space-sm py-space-sm font-data-mono text-data-mono text-on-surface-variant">g</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">5,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary font-medium">+20,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface">-18,450</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-error">-150</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary">+50</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right font-bold text-primary bg-surface-container-high/60">6,450</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">8,000</td>
+<td class="px-space-md py-space-sm text-center">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">warning</span>부족 경고 (잔여 2.4일)
+                </span>
+</td>
+<td class="px-space-md py-space-sm text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">실사 입력</button>
+</td>
+</tr>
+<!-- 2. 매일/서울우유 -->
+<tr class="hover:bg-surface-container-low transition-colors bg-error-container/10">
+<td class="px-space-md py-space-sm font-medium text-primary flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>매일/서울우유</span>
+</td>
+<td class="px-space-sm py-space-sm font-data-mono text-data-mono text-on-surface-variant">ml</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">10,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary font-medium">+80,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface">-72,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-error">-500</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right font-bold text-primary bg-surface-container-high/60">17,500</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">25,000</td>
+<td class="px-space-md py-space-sm text-center">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">warning</span>부족 경고 (잔여 1.8일)
+                </span>
+</td>
+<td class="px-space-md py-space-sm text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">실사 입력</button>
+</td>
+</tr>
+<!-- 3. 바닐라 시럽 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-space-md py-space-sm font-medium text-primary flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>바닐라 시럽</span>
+</td>
+<td class="px-space-sm py-space-sm font-data-mono text-data-mono text-on-surface-variant">ml</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">2,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary font-medium">+5,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface">-3,900</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-error">-100</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right font-bold text-primary bg-surface-container-high/60">3,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">2,000</td>
+<td class="px-space-md py-space-sm text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>안전
+                </span>
+</td>
+<td class="px-space-md py-space-sm text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">실사 입력</button>
+</td>
+</tr>
+<!-- 4. 콜드브루 원액 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-space-md py-space-sm font-medium text-primary flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>콜드브루 원액</span>
+</td>
+<td class="px-space-sm py-space-sm font-data-mono text-data-mono text-on-surface-variant">ml</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">3,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary font-medium">+10,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface">-7,500</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right font-bold text-primary bg-surface-container-high/60">5,500</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">3,000</td>
+<td class="px-space-md py-space-sm text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>안전
+                </span>
+</td>
+<td class="px-space-md py-space-sm text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">실사 입력</button>
+</td>
+</tr>
+<!-- 5. 레몬 베이스 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-space-md py-space-sm font-medium text-primary flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>레몬 베이스</span>
+</td>
+<td class="px-space-sm py-space-sm font-data-mono text-data-mono text-on-surface-variant">ml</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">1,500</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary font-medium">+4,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface">-2,400</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary">+20</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right font-bold text-primary bg-surface-container-high/60">3,120</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">1,500</td>
+<td class="px-space-md py-space-sm text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>안전
+                </span>
+</td>
+<td class="px-space-md py-space-sm text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">실사 입력</button>
+</td>
+</tr>
+<!-- 6. 크로플 생지 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-space-md py-space-sm font-medium text-primary flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>크로플 생지</span>
+</td>
+<td class="px-space-sm py-space-sm font-data-mono text-data-mono text-on-surface-variant">개</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">40</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary font-medium">+120</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface">-80</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-error">-2</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right font-bold text-primary bg-surface-container-high/60">78</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">50</td>
+<td class="px-space-md py-space-sm text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>안전
+                </span>
+</td>
+<td class="px-space-md py-space-sm text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">실사 입력</button>
+</td>
+</tr>
+<!-- 7. 테이크아웃 종이컵(HOT) -->
+<tr class="hover:bg-surface-container-low transition-colors bg-error-container/10">
+<td class="px-space-md py-space-sm font-medium text-primary flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>테이크아웃 종이컵(HOT)</span>
+</td>
+<td class="px-space-sm py-space-sm font-data-mono text-data-mono text-on-surface-variant">개</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">200</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary font-medium">+1,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface">-880</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-error">-10</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-error">-20</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right font-bold text-primary bg-surface-container-high/60">290</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">500</td>
+<td class="px-space-md py-space-sm text-center">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">warning</span>부족 경고 (잔여 3.1일)
+                </span>
+</td>
+<td class="px-space-md py-space-sm text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">실사 입력</button>
+</td>
+</tr>
+<!-- 8. 테이크아웃 투명컵(ICE) -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-space-md py-space-sm font-medium text-primary flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>테이크아웃 투명컵(ICE)</span>
+</td>
+<td class="px-space-sm py-space-sm font-data-mono text-data-mono text-on-surface-variant">개</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">300</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary font-medium">+1,500</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface">-1,120</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-error">-5</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right font-bold text-primary bg-surface-container-high/60">675</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">500</td>
+<td class="px-space-md py-space-sm text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>안전
+                </span>
+</td>
+<td class="px-space-md py-space-sm text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">실사 입력</button>
+</td>
+</tr>
+<!-- 9. 종이 리드(뚜껑) -->
+<tr class="hover:bg-surface-container-low transition-colors bg-secondary-fixed/20">
+<td class="px-space-md py-space-sm font-medium text-primary flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span>종이 리드(뚜껑)</span>
+</td>
+<td class="px-space-sm py-space-sm font-data-mono text-data-mono text-on-surface-variant">개</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">250</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary font-medium">+1,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface">-870</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-error">-5</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right font-bold text-primary bg-surface-container-high/60">375</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">400</td>
+<td class="px-space-md py-space-sm text-center">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">info</span>주의 (안전재고 미달)
+                </span>
+</td>
+<td class="px-space-md py-space-sm text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">실사 입력</button>
+</td>
+</tr>
+<!-- 10. 친환경 빨대 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-space-md py-space-sm font-medium text-primary flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>친환경 빨대</span>
+</td>
+<td class="px-space-sm py-space-sm font-data-mono text-data-mono text-on-surface-variant">개</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">500</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary font-medium">+2,000</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface">-1,450</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right font-bold text-primary bg-surface-container-high/60">1,050</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">600</td>
+<td class="px-space-md py-space-sm text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>안전
+                </span>
+</td>
+<td class="px-space-md py-space-sm text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">실사 입력</button>
+</td>
+</tr>
+<!-- 11. 컵홀더/슬리브 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-space-md py-space-sm font-medium text-primary flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>컵홀더/슬리브</span>
+</td>
+<td class="px-space-sm py-space-sm font-data-mono text-data-mono text-on-surface-variant">개</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">400</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-secondary font-medium">+1,500</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface">-1,200</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">0</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right font-bold text-primary bg-surface-container-high/60">700</td>
+<td class="px-space-md py-space-sm font-data-mono text-data-mono text-right text-on-surface-variant">500</td>
+<td class="px-space-md py-space-sm text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>안전
+                </span>
+</td>
+<td class="px-space-md py-space-sm text-center">
+<button class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">실사 입력</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Audit trail stamp -->
+<div class="px-space-md py-space-sm bg-surface-container-low flex flex-col sm:flex-row items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1 font-data-mono text-[11px]">
+<span class="material-symbols-outlined text-[14px]">history</span>
+          최근 실사 기준: 2026-09-18 09:30 매니저 박지훈 전수 검수 완료
+        </span>
+<div class="flex items-center gap-space-sm mt-2 sm:mt-0 font-data-mono text-[11px]">
+<span>실사 일치율: 81.8% (9/11 품목 일치)</span>
+<span>·</span>
+<span class="text-error">미세 오차 실사조정 반영 완료</span>
+</div>
+</div>
+</div>
+<!-- Secondary Context Cards: Warehouse Stock Flow Snapshot -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">오늘 입고 예정 건</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">local_shipping</span>
+</div>
+<div class="my-space-sm">
+<div class="font-headline-md text-headline-md text-primary font-bold">1건 (에이원커피 유통)</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">에스프레소 원두 10,000g 오후 2시 검수 예정</p>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 70%;"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">폐기율 안전 통제</span>
+<span class="material-symbols-outlined text-error text-[20px]">delete_sweep</span>
+</div>
+<div class="my-space-sm">
+<div class="font-headline-md text-headline-md text-primary font-bold">0.68% <span class="font-label-sm text-label-sm text-secondary font-normal">(목표치 1.2% 이하)</span></div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">우유 유통기한 임박분 500ml 소진 폐기 기록됨</p>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary-container h-full rounded-full" style="width: 45%;"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">자동 발주 권장 알림</span>
+<span class="material-symbols-outlined text-primary text-[20px]">notification_important</span>
+</div>
+<div class="my-space-sm">
+<div class="font-headline-md text-headline-md text-error font-bold">2개 업체 주문 필요</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">서울우유 남부지사 &amp; 종이컵 팩토리 재주문 권장</p>
+</div>
+<div class="flex items-center gap-space-xs text-primary font-label-sm text-label-sm font-semibold">
+<span class="hover:underline cursor-pointer">발주서 초안 바로 생성 →</span>
+</div>
+</div>
+</div>
+</div>
+<!-- OVERLAID MODAL (Visible by Default per PRD requirement) -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary-container/45 backdrop-blur-sm transition-opacity" id="stockModal">
+<div class="bg-surface-container-lowest rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[92vh]">
+<!-- Modal Header -->
+<div class="px-space-xl py-space-lg bg-surface-container-lowest flex items-start justify-between border-b-0">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-data-mono text-[10px] font-bold">INVENTORY EVENT</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">원장 트랜잭션 기록</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-primary mt-1 font-bold">
+            재고 변동 기록 추가 (입고 / 폐기 / 실사조정)
+          </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            재료의 실제 물리적 변동을 기록하여 예상 잔량을 갱신합니다.
+          </p>
+</div>
+<button class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface transition-colors" id="btnCloseModal" title="창 닫기" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Modal Body (Form Fields) -->
+<div class="px-space-xl py-space-md overflow-y-auto flex flex-col gap-space-md">
+<!-- 1. 변동 구분: Segmented Buttons -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-semibold flex items-center gap-1">
+<span>변동 유형 선택</span>
+<span class="text-error">*</span>
+</label>
+<div class="grid grid-cols-3 gap-2 p-1 bg-surface-container-low rounded-xl">
+<button class="py-2.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md font-semibold shadow-sm flex items-center justify-center gap-1.5 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">add_box</span>
+<span>입고 (+)</span>
+</button>
+<button class="py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+<span>폐기 (-)</span>
+</button>
+<button class="py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span>실사조정 (±)</span>
+</button>
+</div>
+</div>
+<!-- 2. 기록 일자 & 대상 재료 (Two Column) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-semibold flex items-center gap-1">
+<span>기록 일자</span>
+<span class="text-error">*</span>
+</label>
+<div class="relative">
+<input class="w-full h-10 px-3 rounded-lg bg-surface-container-low font-data-mono text-data-mono text-on-surface focus:outline-none focus:ring-1 focus:ring-primary" type="date" value="2026-09-18">
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-semibold flex items-center gap-1">
+<span>대상 원재료</span>
+<span class="text-error">*</span>
+</label>
+<div class="relative">
+<select class="w-full h-10 px-3 pr-8 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary appearance-none cursor-pointer">
+<option selected="">에스프레소 원두 (단위: g)</option>
+<option>매일/서울우유 (단위: ml)</option>
+<option>바닐라 시럽 (단위: ml)</option>
+<option>콜드브루 원액 (단위: ml)</option>
+<option>레몬 베이스 (단위: ml)</option>
+<option>크로플 생지 (단위: 개)</option>
+<option>테이크아웃 종이컵(HOT) (단위: 개)</option>
+<option>테이크아웃 투명컵(ICE) (단위: 개)</option>
+<option>종이 리드(뚜껑) (단위: 개)</option>
+<option>친환경 빨대 (단위: 개)</option>
+<option>컵홀더/슬리브 (단위: 개)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-on-surface-variant pointer-events-none text-[20px]">expand_more</span>
+</div>
+</div>
+</div>
+<!-- 3. 공급사 & 변동 수량 (Two Column) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-semibold">공급사 / 거래처</label>
+<input class="w-full h-10 px-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary" type="text" value="에이원커피 유통 (납기 2일)">
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-semibold flex items-center gap-1">
+<span>변동 수량 (입고량)</span>
+<span class="text-error">*</span>
+</label>
+<div class="relative flex items-center">
+<input class="w-full h-10 pl-3 pr-12 rounded-lg bg-surface-container-low font-data-mono text-data-mono text-primary font-bold text-right focus:outline-none focus:ring-1 focus:ring-primary" type="text" value="10,000">
+<span class="absolute right-3 font-data-mono text-data-mono text-on-surface-variant pointer-events-none font-semibold">g</span>
+</div>
+</div>
+</div>
+<!-- 4. 구매 단가/금액 & 사유/메모 -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-semibold">구매 단가 / 총 금액 (VAT포함)</label>
+<div class="relative flex items-center">
+<input class="w-full h-10 pl-3 pr-12 rounded-lg bg-surface-container-low font-data-mono text-data-mono text-primary font-medium text-right focus:outline-none focus:ring-1 focus:ring-primary" type="text" value="110,000">
+<span class="absolute right-3 font-data-mono text-data-mono text-on-surface-variant pointer-events-none">원</span>
+</div>
+<span class="font-data-mono text-[11px] text-on-surface-variant leading-none">구매용량 10kg 포대 단위 기준</span>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-semibold">변동 사유 / 적요 메모</label>
+<input class="w-full h-10 px-3 rounded-lg bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary" type="text" value="정기 화요 발주 입고 검수 완료">
+</div>
+</div>
+<!-- Expected Balance Impact Box (Real-time Simulation) -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">재고 수불 시뮬레이션 영향도</span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary font-bold">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+              안전재고 복귀 예정
+            </span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-space-md mt-1 pt-1 bg-surface-container-lowest p-space-sm rounded-lg">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">현재 예상 잔량</span>
+<span class="font-data-mono text-headline-sm text-error font-bold mt-0.5">6,450 g</span>
+<span class="font-data-mono text-[10px] text-error">안전재고 8,000g 미달</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">이번 입고 반영</span>
+<span class="font-data-mono text-headline-sm text-secondary font-bold mt-0.5">+10,000 g</span>
+<span class="font-data-mono text-[10px] text-on-surface-variant">납품서 #A1-9843</span>
+</div>
+<div class="flex flex-col col-span-2 sm:col-span-1 bg-surface-container-high/60 p-2 rounded-md">
+<span class="font-label-sm text-label-sm text-primary font-semibold">변동 후 예상 잔량</span>
+<span class="font-data-mono text-headline-sm text-primary font-bold mt-0.5">16,450 g</span>
+<span class="font-data-mono text-[10px] text-secondary font-semibold">안전 기준치 205% 확보</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Actions (Footer) -->
+<div class="px-space-xl py-space-md bg-surface-container-low flex items-center justify-end gap-space-sm">
+<button class="px-space-lg py-2.5 rounded-lg bg-surface-container-highest text-on-surface font-label-md text-label-md hover:bg-surface-container transition-colors" id="btnCancelModal" type="button">
+          닫기
+        </button>
+<button class="px-space-xl py-2.5 rounded-lg bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container transition-all flex items-center gap-space-xs shadow-md" id="btnSaveStock" type="button">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span>재고 변동 기록 저장</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple interaction for the Inventory Movement Modal toggle
+  const modal = document.getElementById('stockModal');
+  const btnClose = document.getElementById('btnCloseModal');
+  const btnCancel = document.getElementById('btnCancelModal');
+  const btnOpen = document.getElementById('btnOpenModal');
+  const btnSave = document.getElementById('btnSaveStock');
+
+  function closeModal() {
+    if (modal) {
+      modal.classList.add('hidden');
+    }
+  }
+
+  function openModal() {
+    if (modal) {
+      modal.classList.remove('hidden');
+    }
+  }
+
+  if (btnClose) btnClose.addEventListener('click', closeModal);
+  if (btnCancel) btnCancel.addEventListener('click', closeModal);
+  if (btnOpen) btnOpen.addEventListener('click', openModal);
+
+  if (btnSave) {
+    btnSave.addEventListener('click', () => {
+      // Visual feedback for save confirmation
+      btnSave.innerText = '저장 완료!';
+      btnSave.classList.remove('bg-primary');
+      btnSave.classList.add('bg-secondary');
+      setTimeout(() => {
+        closeModal();
+        btnSave.innerHTML = '<span class="material-symbols-outlined text-[18px]">save</span><span>재고 변동 기록 저장</span>';
+        btnSave.classList.remove('bg-secondary');
+        btnSave.classList.add('bg-primary');
+      }, 700);
+    });
+  }
+</script></main><footer class="w-full bg-surface-container-lowest shadow-[0_-1px_6px_rgba(0,0,0,0.02)]"><div class="w-full px-margin py-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-md text-on-surface-variant font-body-sm text-body-sm"><span>© 2026 프렙 카페 F&amp;B 매장 관리 원장 시스템</span><span class="hidden md:inline">·</span><span class="font-data-mono text-data-mono hidden md:inline">POS ENGINE v4.2.0-STABLE</span></div><div class="flex items-center gap-space-lg font-label-sm text-label-sm text-on-surface-variant"><span class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>클라우드 DB 동기화 완료 (09:42)</span><span class="hover:text-on-surface transition-colors cursor-pointer">원장 데이터 내보내기 (JSON/CSV)</span><span class="hover:text-on-surface transition-colors cursor-pointer">시스템 지원센터</span></div></div></footer></body></html>

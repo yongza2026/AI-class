@@ -1,0 +1,827 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><title>Prep Cafe Operations &amp; Ledger System</title><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-container-low": "#eff4ff",
+          "error": "#ba1a1a",
+          "surface-tint": "#74584e",
+          "on-tertiary-fixed": "#001d31",
+          "on-surface-variant": "#504440",
+          "primary": "#090100",
+          "tertiary-fixed": "#cce5ff",
+          "on-error-container": "#93000a",
+          "surface-bright": "#f8f9ff",
+          "tertiary-fixed-dim": "#93ccff",
+          "background": "#f8f9ff",
+          "surface-dim": "#cbdbf5",
+          "on-error": "#ffffff",
+          "on-surface": "#0b1c30",
+          "on-primary-fixed": "#2a170f",
+          "on-tertiary-fixed-variant": "#004b73",
+          "secondary-fixed": "#ffdbca",
+          "inverse-primary": "#e3bfb2",
+          "surface": "#f8f9ff",
+          "primary-fixed-dim": "#e3bfb2",
+          "surface-container-lowest": "#ffffff",
+          "inverse-on-surface": "#eaf1ff",
+          "inverse-surface": "#213145",
+          "on-secondary-container": "#682c00",
+          "on-secondary-fixed-variant": "#763300",
+          "surface-container-high": "#dce9ff",
+          "surface-variant": "#d3e4fe",
+          "tertiary": "#000308",
+          "tertiary-container": "#001f34",
+          "outline-variant": "#d3c3be",
+          "secondary-fixed-dim": "#ffb68e",
+          "secondary": "#9b4500",
+          "on-primary": "#ffffff",
+          "primary-fixed": "#ffdbce",
+          "on-secondary-fixed": "#331200",
+          "on-primary-container": "#9e7e73",
+          "on-secondary": "#ffffff",
+          "on-tertiary-container": "#1b8ccf",
+          "surface-container": "#e5eeff",
+          "on-background": "#0b1c30",
+          "outline": "#827470",
+          "secondary-container": "#fd8a42",
+          "on-primary-fixed-variant": "#5a4137",
+          "on-tertiary": "#ffffff",
+          "primary-container": "#2c1810",
+          "surface-container-highest": "#d3e4fe",
+          "error-container": "#ffdad6"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "space-sm": "0.5rem",
+          "space-md": "0.75rem",
+          "space-xl": "1.5rem",
+          "gutter-compact": "0.5rem",
+          "space-lg": "1rem",
+          "margin-mobile": "1rem",
+          "gutter": "1rem",
+          "space-xs": "0.25rem",
+          "margin": "1.5rem"
+        },
+        "fontFamily": {
+          "body-lg": ["Inter"],
+          "data-table": ["Inter"],
+          "body-sm": ["Inter"],
+          "data-metric": ["Inter"],
+          "body-md": ["Inter"],
+          "headline-xl": ["Inter"],
+          "headline-lg": ["Inter"],
+          "data-mono": ["JetBrains Mono"],
+          "headline-md": ["Inter"],
+          "label-sm": ["Inter"],
+          "label-md": ["Inter"],
+          "headline-sm": ["Inter"]
+        },
+        "fontSize": {
+          "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400"}],
+          "data-table": ["13px", {"lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400"}],
+          "body-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400"}],
+          "data-metric": ["28px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+          "headline-xl": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600"}],
+          "data-mono": ["12px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "500"}],
+          "headline-md": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "600"}],
+          "label-md": ["13px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+          "headline-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600"}]
+        }
+      }
+    }
+  }</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-margin flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-md"><img alt="Prep Cafe Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XERa08ngvAj5NXppFF8c8UDyMYX7JS6fiylapjtDkP9NiJ7zQmP0ne5NoJ_CkMMvUc34hYHmtb4IB7DcxNhnveMMzKpo3YQVacoLC8gvxCQYcnf30D-pQWMBxk9UnGBhoaMDakqcZSvlhrnb3pgiJFmsRq-G2_Cxc2cN2gU6N9CsmJeArkm77U3g341Ivbd6I8snkoMgcHMgBySQ0R9vjwV6rL3kzAXiANAK5tBTDrErOKva_k_HWHyAM"><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-primary tracking-tight">프렙 카페</span><span class="font-label-sm text-label-sm text-on-surface-variant font-mono">POS &amp; LEDGER</span></div></div></div><div class="hidden xl:flex items-center gap-space-xs px-space-md py-space-xs rounded-xl bg-surface-container-low"><span class="w-2 h-2 rounded-full bg-secondary"></span><span class="font-label-sm text-label-sm text-on-surface font-medium">영업중</span><span class="text-on-surface-variant font-label-sm text-label-sm">·</span><span class="font-data-mono text-data-mono text-on-surface-variant">2026-09-18 마감완료</span></div><nav class="hidden lg:flex items-center gap-space-xs px-space-xs bg-surface-container-low p-1 rounded-xl" data-active-classes="bg-primary-container text-on-primary font-semibold rounded-lg shadow-sm"><a aria-current="page" class="px-space-md py-1.5 transition-colors bg-primary-container text-on-primary font-semibold rounded-lg shadow-sm" data-path="dashboard-and-profit" href="#">대시보드 &amp; 손익</a><a class="px-space-md py-1.5 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="sales-ledger" href="#">판매 기록 관리</a><a class="px-space-md py-1.5 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="menu-profitability" href="#">메뉴별 수익성</a><a class="px-space-md py-1.5 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="inventory-and-stock" href="#">재고 현황 &amp; 흐름</a><a class="px-space-md py-1.5 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="expense-ledger" href="#">비용 기록 관리</a><a class="px-space-md py-1.5 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="data-sync-and-status" href="#">데이터 관리</a></nav></div><div class="flex items-center gap-space-md"><div class="hidden sm:flex items-center gap-space-xs"><button class="px-space-md py-1.5 rounded-lg bg-secondary text-on-secondary font-label-md text-label-md hover:bg-secondary-container hover:text-on-secondary-container transition-all flex items-center gap-space-xs" type="button"><span class="material-symbols-outlined text-[16px]">point_of_sale</span>판매 입력</button><button class="px-space-md py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-container-highest hover:text-on-surface transition-all flex items-center gap-space-xs" type="button"><span class="material-symbols-outlined text-[16px]">inventory_2</span>재고 기록</button></div><div class="flex items-center gap-space-xs px-space-md py-1 rounded-lg bg-surface-container-low"><span class="material-symbols-outlined text-secondary text-[18px]">store</span><span class="font-label-md text-label-md text-on-surface font-medium hidden md:inline">프렙 카페 본점</span></div><div class="flex items-center gap-space-xs pl-space-xs"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-sm text-label-sm text-on-surface font-semibold">매니저 박지훈</span><span class="font-data-mono text-[10px] text-on-surface-variant leading-none">SHIFT LEADER</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-surface min-h-[calc(100vh-4rem)]"><div class="flex flex-col w-full">
+<!-- Operational Status Bar -->
+<div class="w-full bg-surface-container-low px-space-xl py-space-sm flex flex-wrap items-center justify-between gap-space-md shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="inline-block w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="font-headline-sm text-headline-sm text-on-surface">영업 결산 현황</span>
+</div>
+<span class="text-on-surface-variant font-label-sm text-label-sm">|</span>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md text-on-surface-variant">기준 일자</span>
+<span class="font-data-mono text-data-mono bg-surface-container-lowest px-2 py-0.5 rounded shadow-sm text-on-surface">2026-09-18 (금)</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm">마감 완료 [18/30일차]</span>
+</div>
+</div>
+<!-- Period Segmented Control -->
+<div class="flex items-center gap-space-sm">
+<div class="flex p-0.5 rounded-lg bg-surface-container shadow-sm">
+<button class="px-3 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all" id="btn-period-daily" onclick="switchPeriod('daily')">일별 (09-18)</button>
+<button class="px-3 py-1 rounded bg-surface-container-lowest text-primary font-label-md text-label-md shadow-sm transition-all" id="btn-period-monthly" onclick="switchPeriod('monthly')">당월 (2026-09)</button>
+<button class="px-3 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all" id="btn-period-custom" onclick="switchPeriod('custom')">맞춤 기간</button>
+</div>
+<div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container-lowest shadow-sm text-on-surface font-data-mono text-data-mono">
+<span class="material-symbols-outlined text-[16px] text-secondary">calendar_today</span>
+<span>2026.09.01 ~ 2026.09.18</span>
+</div>
+</div>
+</div>
+<!-- Main View Container -->
+<div class="w-full px-space-xl py-space-lg flex flex-col gap-space-lg">
+<!-- PRD Policy Guidance Notice -->
+<div class="w-full rounded-lg bg-surface-container-lowest p-space-md flex items-start gap-space-md shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5">info</span>
+<div class="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<p class="font-body-md text-body-md text-on-surface">
+<strong class="font-semibold text-primary">회계 산출 기준 안내:</strong> 본 화면의 메뉴 수익성은 <span class="font-medium text-secondary underline decoration-secondary/30">PRD 정책 B안(재료비·포장비·결제수수료 공제)</span> 기준이며, 매장 총 인건비 및 월 임차료는 단위 메뉴가 아닌 매장 전체 손익에서만 일괄 집계됩니다.
+        </p>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap bg-surface-container-low px-2 py-0.5 rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>정책 B안 적용중
+        </span>
+</div>
+</div>
+<!-- 6-Metric KPI Summary Bento -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-space-md">
+<!-- Metric 1: Total Revenue -->
+<div class="rounded-lg bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">총 매출액 (VAT 별도)</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-low text-primary font-label-sm text-label-sm">실제 실적 확정</span>
+</div>
+<div class="my-space-xs">
+<div class="font-data-metric text-data-metric text-primary tracking-tight">14,820,000<span class="font-body-md text-body-md font-normal text-on-surface-variant ml-1">원</span></div>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span>누적 주문건</span>
+<span class="font-data-mono text-data-mono text-on-surface font-medium">6,112건</span>
+</div>
+</div>
+<!-- Metric 2: Direct Cost -->
+<div class="rounded-lg bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">직접 원가 (재료+포장)</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">원가율 33.0%</span>
+</div>
+<div class="my-space-xs">
+<div class="font-data-metric text-data-metric text-on-surface tracking-tight">4,890,600<span class="font-body-md text-body-md font-normal text-on-surface-variant ml-1">원</span></div>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span>재료 412만 / 포장 77만</span>
+<span class="font-data-mono text-data-mono text-secondary font-medium">정상 범위</span>
+</div>
+</div>
+<!-- Metric 3: Payment Fee -->
+<div class="rounded-lg bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">결제 대행 수수료</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-low text-on-surface font-label-sm text-label-sm">평균 3.0%</span>
+</div>
+<div class="my-space-xs">
+<div class="font-data-metric text-data-metric text-on-surface tracking-tight">444,600<span class="font-body-md text-body-md font-normal text-on-surface-variant ml-1">원</span></div>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span>PG 및 밴 수수료 정산</span>
+<span class="font-data-mono text-data-mono text-on-surface">카드/간편결제</span>
+</div>
+</div>
+<!-- Metric 4: Direct Contribution Margin -->
+<div class="rounded-lg bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">직접 공헌이익</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">마진율 64.0%</span>
+</div>
+<div class="my-space-xs">
+<div class="font-data-metric text-data-metric text-secondary tracking-tight">9,484,800<span class="font-body-md text-body-md font-normal text-on-surface-variant ml-1">원</span></div>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span>매출 - (직접원가+수수료)</span>
+<span class="font-data-mono text-data-mono text-secondary font-medium">안정적</span>
+</div>
+</div>
+<!-- Metric 5: Fixed & Operating Expenses -->
+<div class="rounded-lg bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">고정 및 운영비용</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">중복제외 확인</span>
+</div>
+<div class="my-space-xs">
+<div class="font-data-metric text-data-metric text-on-surface tracking-tight">5,200,000<span class="font-body-md text-body-md font-normal text-on-surface-variant ml-1">원</span></div>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span>임차 240 / 인건 210 / 유틸 70</span>
+<span class="font-data-mono text-data-mono text-on-surface">18일분 안분</span>
+</div>
+</div>
+<!-- Metric 6: Net Operating Profit -->
+<div class="rounded-lg bg-primary-container p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm text-on-primary-container">당월 매장 영업손익</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary text-on-secondary font-label-sm text-label-sm font-semibold">실제 확정</span>
+</div>
+<div class="my-space-xs">
+<div class="font-data-metric text-data-metric text-surface tracking-tight">4,284,800<span class="font-body-md text-body-md font-normal text-on-primary-container ml-1">원</span></div>
+</div>
+<div class="flex items-center justify-between pt-space-xs text-on-primary-container font-label-sm text-label-sm">
+<span>순이익률 28.9%</span>
+<span class="font-data-mono text-data-mono text-secondary-container font-medium">+4.2% vs 전월</span>
+</div>
+</div>
+</div>
+<!-- Main Dual Workspace Layout (Left: Analytics, Right: Widgets/Actions) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- Left Column (8 cols): Charts, Channel Breakdown, Menu Performance -->
+<div class="lg:col-span-8 flex flex-col gap-space-lg">
+<!-- Daily Sales & Profit Trend -->
+<div class="rounded-lg bg-surface-container-lowest p-space-lg shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-space-md gap-space-xs">
+<div>
+<div class="font-headline-md text-headline-md text-primary">일자별 매출 및 영업이익 추이</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">2026-09-01 ~ 2026-09-18 (영업일 18일 집계, 일평균 매출 82.3만원)</div>
+</div>
+<div class="flex items-center gap-space-md font-label-sm text-label-sm">
+<span class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-sm bg-primary"></span>
+<span class="text-on-surface">총 매출</span>
+</span>
+<span class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-sm bg-secondary"></span>
+<span class="text-on-surface">직접 공헌이익</span>
+</span>
+<span class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-sm bg-surface-container-highest"></span>
+<span class="text-on-surface-variant">비용 분배액</span>
+</span>
+</div>
+</div>
+<!-- Trend Bar Chart (Inline SVG visualization for performance and reliability) -->
+<div class="w-full h-56 pt-space-md flex flex-col justify-end">
+<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 720 180">
+<!-- Grid Lines -->
+<line stroke="#E5EEFF" stroke-dasharray="2 3" stroke-width="1" x1="0" x2="720" y1="30" y2="30"></line>
+<line stroke="#E5EEFF" stroke-dasharray="2 3" stroke-width="1" x1="0" x2="720" y1="80" y2="80"></line>
+<line stroke="#E5EEFF" stroke-dasharray="2 3" stroke-width="1" x1="0" x2="720" y1="130" y2="130"></line>
+<line stroke="#CBD5E1" stroke-width="1" x1="0" x2="720" y1="170" y2="170"></line>
+<!-- Day 01 to Day 18 Data Bars -->
+<!-- Bar 1 (09-01) -->
+<rect fill="#090100" height="115" rx="2" width="22" x="15" y="55"></rect>
+<rect fill="#9B4500" height="75" rx="2" width="22" x="15" y="95"></rect>
+<!-- Bar 2 (09-02) -->
+<rect fill="#090100" height="105" rx="2" width="22" x="52" y="65"></rect>
+<rect fill="#9B4500" height="68" rx="2" width="22" x="52" y="102"></rect>
+<!-- Bar 3 (09-03) -->
+<rect fill="#090100" height="125" rx="2" width="22" x="89" y="45"></rect>
+<rect fill="#9B4500" height="85" rx="2" width="22" x="89" y="85"></rect>
+<!-- Bar 4 (09-04) -->
+<rect fill="#090100" height="100" rx="2" width="22" x="126" y="70"></rect>
+<rect fill="#9B4500" height="60" rx="2" width="22" x="126" y="110"></rect>
+<!-- Bar 5 (09-05) Sat -->
+<rect fill="#090100" height="145" rx="2" width="22" x="163" y="25"></rect>
+<rect fill="#9B4500" height="105" rx="2" width="22" x="163" y="65"></rect>
+<!-- Bar 6 (09-06) Sun Peak -->
+<rect fill="#090100" height="150" rx="2" width="22" x="200" y="20"></rect>
+<rect fill="#9B4500" height="110" rx="2" width="22" x="200" y="60"></rect>
+<!-- Bar 7 (09-07) -->
+<rect fill="#090100" height="95" rx="2" width="22" x="237" y="75"></rect>
+<rect fill="#9B4500" height="58" rx="2" width="22" x="237" y="112"></rect>
+<!-- Bar 8 (09-08) -->
+<rect fill="#090100" height="110" rx="2" width="22" x="274" y="60"></rect>
+<rect fill="#9B4500" height="70" rx="2" width="22" x="274" y="100"></rect>
+<!-- Bar 9 (09-09) -->
+<rect fill="#090100" height="120" rx="2" width="22" x="311" y="50"></rect>
+<rect fill="#9B4500" height="80" rx="2" width="22" x="311" y="90"></rect>
+<!-- Bar 10 (09-10) -->
+<rect fill="#090100" height="105" rx="2" width="22" x="348" y="65"></rect>
+<rect fill="#9B4500" height="65" rx="2" width="22" x="348" y="105"></rect>
+<!-- Bar 11 (09-11) -->
+<rect fill="#090100" height="130" rx="2" width="22" x="385" y="40"></rect>
+<rect fill="#9B4500" height="90" rx="2" width="22" x="385" y="80"></rect>
+<!-- Bar 12 (09-12) Sat Peak -->
+<rect fill="#090100" height="152" rx="2" width="22" x="422" y="18"></rect>
+<rect fill="#9B4500" height="112" rx="2" width="22" x="422" y="58"></rect>
+<!-- Bar 13 (09-13) Sun -->
+<rect fill="#090100" height="142" rx="2" width="22" x="459" y="28"></rect>
+<rect fill="#9B4500" height="102" rx="2" width="22" x="459" y="68"></rect>
+<!-- Bar 14 (09-14) -->
+<rect fill="#090100" height="90" rx="2" width="22" x="496" y="80"></rect>
+<rect fill="#9B4500" height="52" rx="2" width="22" x="496" y="118"></rect>
+<!-- Bar 15 (09-15) -->
+<rect fill="#090100" height="108" rx="2" width="22" x="533" y="62"></rect>
+<rect fill="#9B4500" height="72" rx="2" width="22" x="533" y="98"></rect>
+<!-- Bar 16 (09-16) -->
+<rect fill="#090100" height="116" rx="2" width="22" x="570" y="54"></rect>
+<rect fill="#9B4500" height="78" rx="2" width="22" x="570" y="92"></rect>
+<!-- Bar 17 (09-17) -->
+<rect fill="#090100" height="122" rx="2" width="22" x="607" y="48"></rect>
+<rect fill="#9B4500" height="84" rx="2" width="22" x="607" y="86"></rect>
+<!-- Bar 18 (09-18) Today Closed -->
+<rect fill="#090100" height="138" rx="2" width="22" x="644" y="32"></rect>
+<rect fill="#9B4500" height="100" rx="2" width="22" x="644" y="70"></rect>
+<!-- Trend Target Line -->
+<polyline fill="none" points="26,60 63,70 100,50 137,75 174,30 211,25 248,80 285,65 322,55 359,70 396,45 433,22 470,32 507,85 544,68 581,58 618,52 655,36" stroke="#FD8A42" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></polyline>
+</svg>
+</div>
+<!-- Bottom X-Axis Date markers -->
+<div class="w-full flex justify-between pt-2 px-1 text-on-surface-variant font-data-mono text-[11px]">
+<span>09-01</span>
+<span>09-04</span>
+<span>09-07</span>
+<span>09-10</span>
+<span>09-13</span>
+<span>09-16</span>
+<span class="font-bold text-secondary">09-18 (마감)</span>
+</div>
+</div>
+<!-- Sales Channel Breakdown + Channel Economics -->
+<div class="rounded-lg bg-surface-container-lowest p-space-lg shadow-sm">
+<div class="flex items-center justify-between pb-space-md">
+<div>
+<div class="font-headline-md text-headline-md text-primary">판매 채널 비중 및 수익구조</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">포장 주문의 일회용기 포장비 추가 공제 반영 결과</div>
+</div>
+<div class="flex items-center gap-space-xs font-label-sm text-label-sm">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-mono">매장 68% : 포장 32%</span>
+</div>
+</div>
+<!-- Dual Ratio Split Bar -->
+<div class="w-full flex h-4 rounded-full overflow-hidden bg-surface-container mb-space-md">
+<div class="bg-primary flex items-center justify-center text-[10px] text-surface font-semibold" style="width: 68%">68%</div>
+<div class="bg-secondary flex items-center justify-center text-[10px] text-surface font-semibold" style="width: 32%">32%</div>
+</div>
+<!-- Detailed Channel Split Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<!-- Channel 1: Dine-in -->
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md text-primary font-semibold">
+<span class="material-symbols-outlined text-[18px]">local_cafe</span> 매장 이용 (Dine-in)
+                </span>
+<span class="font-data-mono text-data-mono font-bold text-primary">10,077,600원</span>
+</div>
+<div class="mt-space-md flex flex-col gap-1 text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex justify-between">
+<span>주문 건수</span>
+<span class="font-data-mono text-data-mono text-on-surface">3,852건 (63.0%)</span>
+</div>
+<div class="flex justify-between">
+<span>원가 합계 (재료비 위주)</span>
+<span class="font-data-mono text-data-mono text-on-surface">3,124,000원 (31.0%)</span>
+</div>
+<div class="flex justify-between">
+<span>공헌이익률</span>
+<span class="font-data-mono text-data-mono text-primary font-semibold">66.0%</span>
+</div>
+</div>
+</div>
+<!-- Channel 2: Takeout -->
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md text-secondary font-semibold">
+<span class="material-symbols-outlined text-[18px]">takeout_dining</span> 포장 주문 (Takeout)
+                </span>
+<span class="font-data-mono text-data-mono font-bold text-secondary">4,742,400원</span>
+</div>
+<div class="mt-space-md flex flex-col gap-1 text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex justify-between">
+<span>주문 건수</span>
+<span class="font-data-mono text-data-mono text-on-surface">2,260건 (37.0%)</span>
+</div>
+<div class="flex justify-between">
+<span>원가 합계 (컵·홀더·캐리어 포함)</span>
+<span class="font-data-mono text-data-mono text-on-surface">1,766,600원 (37.2%)</span>
+</div>
+<div class="flex justify-between">
+<span>공헌이익률</span>
+<span class="font-data-mono text-data-mono text-secondary font-semibold">59.8%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Top 5 Revenue Menu Matrix -->
+<div class="rounded-lg bg-surface-container-lowest p-space-lg shadow-sm">
+<div class="flex items-center justify-between pb-space-md">
+<div>
+<div class="font-headline-md text-headline-md text-primary">상위 5대 매출 메뉴 수익 기여도</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">재료비 + 포장비 + 결제수수료가 차감된 순수 메뉴별 기여이익 순위</div>
+</div>
+<a class="font-label-md text-label-md text-secondary hover:text-secondary-container transition-colors flex items-center gap-0.5" href="#">
+              전체 메뉴 28종 보기 <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left font-data-table text-data-table">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant uppercase font-label-sm text-label-sm">
+<th class="py-2.5 px-3 rounded-l">순위 / 메뉴명</th>
+<th class="py-2.5 px-3 text-right">판매량</th>
+<th class="py-2.5 px-3 text-right">판매단가</th>
+<th class="py-2.5 px-3 text-right">총 매출액</th>
+<th class="py-2.5 px-3 text-right">직접원가(율)</th>
+<th class="py-2.5 px-3 text-right">수수료(3%)</th>
+<th class="py-2.5 px-3 text-right rounded-r">공헌이익(마진율)</th>
+</tr>
+</thead>
+<tbody class="divide-y-0">
+<!-- Menu 1 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded bg-primary text-surface font-data-mono text-[11px] font-bold flex items-center justify-center">1</span>
+<div>
+<span class="font-semibold text-primary">아메리카노 (ICED/HOT)</span>
+<span class="block text-[11px] text-on-surface-variant">에스프레소 베이스</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface">2,480잔</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface">3,500원</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono font-bold text-primary">8,680,000원</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface-variant">870원 (24.8%)</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface-variant">105원</td>
+<td class="py-3 px-3 text-right">
+<span class="font-data-mono text-data-mono font-bold text-secondary">6,262,000원</span>
+<span class="block text-[11px] text-secondary font-medium">72.1%</span>
+</td>
+</tr>
+<!-- Menu 2 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded bg-surface-container text-on-surface font-data-mono text-[11px] font-bold flex items-center justify-center">2</span>
+<div>
+<span class="font-semibold text-primary">카페 라떼 (ICED)</span>
+<span class="block text-[11px] text-on-surface-variant">생우유 200ml 포함</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface">1,120잔</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface">4,200원</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono font-bold text-primary">4,704,000원</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface-variant">1,480원 (35.2%)</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface-variant">126원</td>
+<td class="py-3 px-3 text-right">
+<span class="font-data-mono text-data-mono font-bold text-secondary">2,905,280원</span>
+<span class="block text-[11px] text-secondary font-medium">61.8%</span>
+</td>
+</tr>
+<!-- Menu 3 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded bg-surface-container text-on-surface font-data-mono text-[11px] font-bold flex items-center justify-center">3</span>
+<div>
+<span class="font-semibold text-primary">바닐라빈 라떼</span>
+<span class="block text-[11px] text-on-surface-variant">수제 시럽 베이스</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface">540잔</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface">4,800원</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono font-bold text-primary">2,592,000원</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface-variant">1,790원 (37.3%)</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface-variant">144원</td>
+<td class="py-3 px-3 text-right">
+<span class="font-data-mono text-data-mono font-bold text-secondary">1,547,640원</span>
+<span class="block text-[11px] text-secondary font-medium">59.7%</span>
+</td>
+</tr>
+<!-- Menu 4 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded bg-surface-container text-on-surface font-data-mono text-[11px] font-bold flex items-center justify-center">4</span>
+<div>
+<span class="font-semibold text-primary">시그니처 콜드브루</span>
+<span class="block text-[11px] text-on-surface-variant">12시간 저온 추출</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface">460잔</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface">4,500원</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono font-bold text-primary">2,070,000원</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface-variant">1,120원 (24.9%)</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface-variant">135원</td>
+<td class="py-3 px-3 text-right">
+<span class="font-data-mono text-data-mono font-bold text-secondary">1,492,700원</span>
+<span class="block text-[11px] text-secondary font-medium">72.1%</span>
+</td>
+</tr>
+<!-- Menu 5 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded bg-surface-container text-on-surface font-data-mono text-[11px] font-bold flex items-center justify-center">5</span>
+<div>
+<span class="font-semibold text-primary">수제 레몬에이드</span>
+<span class="block text-[11px] text-on-surface-variant">생과일 착즙 청</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface">320잔</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface">5,000원</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono font-bold text-primary">1,600,000원</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface-variant">1,620원 (32.4%)</td>
+<td class="py-3 px-3 text-right font-data-mono text-data-mono text-on-surface-variant">150원</td>
+<td class="py-3 px-3 text-right">
+<span class="font-data-mono text-data-mono font-bold text-secondary">1,033,600원</span>
+<span class="block text-[11px] text-secondary font-medium">64.6%</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Right Column (4 cols): Quick Operations, Urgent Stocks & Audit Activity -->
+<div class="lg:col-span-4 flex flex-col gap-space-lg">
+<!-- Quick Action Trigger Block -->
+<div class="rounded-lg bg-surface-container-lowest p-space-lg shadow-sm">
+<div class="font-headline-sm text-headline-sm text-primary mb-space-xs">신규 원장 트랜잭션 입력</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">실시간 주문 및 일별 지출 내역을 즉시 기록합니다.</div>
+<div class="grid grid-cols-1 gap-space-xs">
+<button class="w-full px-space-md py-2.5 rounded bg-secondary text-on-secondary font-label-md text-label-md hover:bg-secondary-container hover:text-on-secondary-container transition-all flex items-center justify-between" onclick="triggerQuickAction('sale')">
+<span class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span>판매 기록 입력 (POS 매출)</span>
+</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+<button class="w-full px-space-md py-2.5 rounded bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-container-highest transition-all flex items-center justify-between" onclick="triggerQuickAction('expense')">
+<span class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">receipt_long</span>
+<span>비용 지출 기록 (원두/소모품/용역)</span>
+</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+<button class="w-full px-space-md py-2.5 rounded bg-surface-container-low text-on-surface font-label-md text-label-md hover:bg-surface-container transition-all flex items-center justify-between" onclick="triggerQuickAction('inventory')">
+<span class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">rule</span>
+<span>재고 실사 조정 (로스/과부족 정산)</span>
+</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Urgent Inventory Warnings (Safety Stock Alert) -->
+<div class="rounded-lg bg-surface-container-lowest p-space-lg shadow-sm">
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-error text-[20px]">warning</span>
+<span class="font-headline-sm text-headline-sm text-primary">안전재고 미달 품목 (3건)</span>
+</div>
+<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">발주 권고</span>
+</div>
+<div class="flex flex-col gap-space-md">
+<!-- Warning 1: Espresso Beans -->
+<div class="p-space-md rounded bg-surface-container-low flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-semibold text-primary font-body-md text-body-md">다크 로스트 시그니처 원두</span>
+<span class="font-data-mono text-data-mono text-error font-bold">잔여 2.4일분</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>현재 실재고 4.8 kg / 일평균 소진 2.0 kg</span>
+<span class="text-error font-medium">안전기준 10.0 kg</span>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden mt-1">
+<div class="h-full bg-error rounded-full" style="width: 24%"></div>
+</div>
+</div>
+<!-- Warning 2: Fresh Milk -->
+<div class="p-space-md rounded bg-surface-container-low flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-semibold text-primary font-body-md text-body-md">서울우유 바리스타 전용 (1L)</span>
+<span class="font-data-mono text-data-mono text-error font-bold">잔여 1.8일분</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>현재 실재고 14 팩 / 일평균 소진 8 팩</span>
+<span class="text-error font-medium">안전기준 30 팩</span>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden mt-1">
+<div class="h-full bg-error rounded-full" style="width: 18%"></div>
+</div>
+</div>
+<!-- Warning 3: Hot Paper Cup -->
+<div class="p-space-md rounded bg-surface-container-low flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-semibold text-primary font-body-md text-body-md">13oz 크라프트 이중 종이컵</span>
+<span class="font-data-mono text-data-mono text-secondary font-bold">잔여 3.1일분</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>현재 실재고 350 개 / 일평균 소진 110 개</span>
+<span class="text-secondary font-medium">안전기준 600 개</span>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-1.5 rounded-full bg-surface-container overflow-hidden mt-1">
+<div class="h-full bg-secondary rounded-full" style="width: 35%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Real-time Activity Feed (Recent Sales + Expenses) -->
+<div class="rounded-lg bg-surface-container-lowest p-space-lg shadow-sm">
+<div class="flex items-center justify-between pb-space-md">
+<span class="font-headline-sm text-headline-sm text-primary">최근 등록 원장 기록</span>
+<span class="font-data-mono text-data-mono text-on-surface-variant">실시간 동기화</span>
+</div>
+<div class="flex flex-col gap-space-md">
+<!-- Sale 1 -->
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-7 h-7 rounded bg-surface-container flex items-center justify-center text-primary mt-0.5">
+<span class="material-symbols-outlined text-[16px]">coffee</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-primary font-semibold">아메리카노 외 2건</div>
+<div class="font-data-mono text-[11px] text-on-surface-variant">18:41 · 포장 (신용카드)</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-data-mono text-data-mono font-bold text-primary">+12,500원</span>
+<span class="block text-[10px] text-secondary font-medium">마진 68%</span>
+</div>
+</div>
+<!-- Sale 2 -->
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-7 h-7 rounded bg-surface-container flex items-center justify-center text-primary mt-0.5">
+<span class="material-symbols-outlined text-[16px]">coffee</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-primary font-semibold">카페라떼 2잔 (오트밀크 변경)</div>
+<div class="font-data-mono text-[11px] text-on-surface-variant">18:22 · 매장 (간편페이)</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-data-mono text-data-mono font-bold text-primary">+9,600원</span>
+<span class="block text-[10px] text-secondary font-medium">마진 62%</span>
+</div>
+</div>
+<!-- Expense 1 -->
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-7 h-7 rounded bg-error-container flex items-center justify-center text-error mt-0.5">
+<span class="material-symbols-outlined text-[16px]">payments</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-primary font-semibold">일일 소모품 긴급 구매 (영수증)</div>
+<div class="font-data-mono text-[11px] text-on-surface-variant">17:50 · 테이크아웃 빨대 500ea</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-data-mono text-data-mono font-bold text-error">-14,800원</span>
+<span class="block text-[10px] text-on-surface-variant">운영비 반영</span>
+</div>
+</div>
+<!-- Sale 3 -->
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-7 h-7 rounded bg-surface-container flex items-center justify-center text-primary mt-0.5">
+<span class="material-symbols-outlined text-[16px]">coffee</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-primary font-semibold">바닐라빈 라떼 + 휘낭시에</div>
+<div class="font-data-mono text-[11px] text-on-surface-variant">17:15 · 매장 (신용카드)</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-data-mono text-data-mono font-bold text-primary">+7,800원</span>
+<span class="block text-[10px] text-secondary font-medium">마진 64%</span>
+</div>
+</div>
+<!-- Expense 2 -->
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-7 h-7 rounded bg-surface-container-high flex items-center justify-center text-primary mt-0.5">
+<span class="material-symbols-outlined text-[16px]">local_shipping</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-primary font-semibold">원두 정기 입고 세금계산서</div>
+<div class="font-data-mono text-[11px] text-on-surface-variant">14:00 · 로스터리 직납 20kg</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-data-mono text-data-mono font-bold text-on-surface">-380,000원</span>
+<span class="block text-[10px] text-on-surface-variant">원재료비 확정</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Action Modal (Simple Vanilla JS Modal without heavy markup) -->
+<div class="fixed inset-0 z-50 bg-primary/45 backdrop-blur-sm hidden items-center justify-center p-4" id="quick-action-modal">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-lg p-space-lg shadow-xl">
+<div class="flex items-center justify-between pb-space-sm mb-space-md">
+<span class="font-headline-sm text-headline-sm text-primary" id="modal-title">원장 입력</span>
+<button class="text-on-surface-variant hover:text-on-surface" onclick="closeModal()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-space-md font-body-md text-body-md text-on-surface" id="modal-content">
+<!-- Dynamic Content -->
+</div>
+<div class="mt-space-lg flex justify-end gap-space-sm">
+<button class="px-space-md py-1.5 rounded bg-surface-container text-on-surface font-label-md text-label-md" onclick="closeModal()">취소</button>
+<button class="px-space-md py-1.5 rounded bg-secondary text-on-secondary font-label-md text-label-md font-medium" onclick="submitModal()">저장 및 원장 반영</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+    function switchPeriod(type) {
+      const btnDaily = document.getElementById('btn-period-daily');
+      const btnMonthly = document.getElementById('btn-period-monthly');
+      const btnCustom = document.getElementById('btn-period-custom');
+
+      [btnDaily, btnMonthly, btnCustom].forEach(btn => {
+        btn.className = 'px-3 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all';
+      });
+
+      if (type === 'daily') {
+        btnDaily.className = 'px-3 py-1 rounded bg-surface-container-lowest text-primary font-label-md text-label-md shadow-sm transition-all';
+      } else if (type === 'monthly') {
+        btnMonthly.className = 'px-3 py-1 rounded bg-surface-container-lowest text-primary font-label-md text-label-md shadow-sm transition-all';
+      } else if (type === 'custom') {
+        btnCustom.className = 'px-3 py-1 rounded bg-surface-container-lowest text-primary font-label-md text-label-md shadow-sm transition-all';
+      }
+    }
+
+    function triggerQuickAction(type) {
+      const modal = document.getElementById('quick-action-modal');
+      const title = document.getElementById('modal-title');
+      const content = document.getElementById('modal-content');
+
+      if (type === 'sale') {
+        title.innerText = '판매 기록 신규 입력';
+        content.innerHTML = `
+          <div>
+            <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">메뉴 선택</label>
+            <select class="w-full h-9 px-2 bg-surface-container-low rounded text-on-surface font-body-md text-body-md">
+              <option>아메리카노 (ICED) - 3,500원</option>
+              <option>카페 라떼 (HOT) - 4,200원</option>
+              <option>바닐라빈 라떼 - 4,800원</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">수량</label>
+              <input type="number" value="1" min="1" class="w-full h-9 px-2 bg-surface-container-low rounded text-on-surface font-data-mono text-data-mono" />
+            </div>
+            <div>
+              <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">채널 구분</label>
+              <select class="w-full h-9 px-2 bg-surface-container-low rounded text-on-surface font-body-md text-body-md">
+                <option>매장 (Dine-in)</option>
+                <option>포장 (Takeout)</option>
+              </select>
+            </div>
+          </div>
+        `;
+      } else if (type === 'expense') {
+        title.innerText = '비용 지출 기록 입력';
+        content.innerHTML = `
+          <div>
+            <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">비용 항목</label>
+            <input type="text" placeholder="예: 우유 긴급 보충, 테이크아웃 컵" class="w-full h-9 px-2 bg-surface-container-low rounded text-on-surface font-body-md text-body-md" />
+          </div>
+          <div>
+            <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">금액 (원)</label>
+            <input type="number" placeholder="24000" class="w-full h-9 px-2 bg-surface-container-low rounded text-on-surface font-data-mono text-data-mono" />
+          </div>
+        `;
+      } else {
+        title.innerText = '재고 실사 수량 조정';
+        content.innerHTML = `
+          <div>
+            <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">품목 선택</label>
+            <select class="w-full h-9 px-2 bg-surface-container-low rounded text-on-surface font-body-md text-body-md">
+              <option>다크 로스트 원두 (kg)</option>
+              <option>생우유 (1L)</option>
+              <option>13oz 크라프트 종이컵 (ea)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">실측 수량</label>
+            <input type="number" step="0.1" placeholder="4.5" class="w-full h-9 px-2 bg-surface-container-low rounded text-on-surface font-data-mono text-data-mono" />
+          </div>
+        `;
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('quick-action-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function submitModal() {
+      closeModal();
+      alert('원장에 성공적으로 반영되었습니다.');
+    }
+  </script>
+</div></main><footer class="w-full bg-surface-container-lowest shadow-[0_-1px_6px_rgba(0,0,0,0.02)]"><div class="w-full px-margin py-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-md text-on-surface-variant font-body-sm text-body-sm"><span>© 2026 프렙 카페 F&amp;B 매장 관리 원장 시스템</span><span class="hidden md:inline">·</span><span class="font-data-mono text-data-mono hidden md:inline">POS ENGINE v4.2.0-STABLE</span></div><div class="flex items-center gap-space-lg font-label-sm text-label-sm text-on-surface-variant"><span class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>클라우드 DB 동기화 완료 (09:42)</span><span class="hover:text-on-surface transition-colors cursor-pointer">원장 데이터 내보내기 (JSON/CSV)</span><span class="hover:text-on-surface transition-colors cursor-pointer">시스템 지원센터</span></div></div></footer></body></html>

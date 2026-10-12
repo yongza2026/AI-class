@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient for Navy Plane -->
+    <linearGradient id="navyPlane" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141E30" />
+      <stop offset="100%" stop-color="#0E1624" />
+    </linearGradient>
+
+    <!-- Negroni Red Gradient -->
+    <linearGradient id="rubyRed" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E8483B" stop-opacity="0.9" />
+      <stop offset="60%" stop-color="#B7271B" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#731109" />
+    </linearGradient>
+
+    <!-- Translucent Gold Highball Gradient -->
+    <linearGradient id="translucentGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF5D6" stop-opacity="0.75" />
+      <stop offset="50%" stop-color="#F2D27A" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#CFA138" stop-opacity="0.9" />
+    </linearGradient>
+
+    <!-- Deep Tea Amber Gradient -->
+    <linearGradient id="teaAmber" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C27D46" stop-opacity="0.85" />
+      <stop offset="50%" stop-color="#8C4920" stop-opacity="0.92" />
+      <stop offset="100%" stop-color="#4F2610" />
+    </linearGradient>
+
+    <!-- Glass Highlights -->
+    <linearGradient id="glassShine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6" />
+      <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.1" />
+      <stop offset="70%" stop-color="#FFFFFF" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.4" />
+    </linearGradient>
+
+    <!-- Drop Shadow Filter -->
+    <filter id="castShadow" x="-20%" y="-20%" width="150%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="16" />
+      <feOffset dx="12" dy="24" result="offsetblur" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.35" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Split: Ivory Left/Top, Deep Navy Right/Bottom -->
+  <rect width="900" height="1200" fill="#F2ECDD" />
+  <polygon points="420,0 900,0 900,1200 180,1200" fill="url(#navyPlane)" />
+
+  <!-- Bauhaus Composition Graphic Shapes in Background -->
+  <circle cx="220" cy="300" r="180" fill="#E43D30" opacity="0.15" />
+  <path d="M 650,420 A 140,140 0 0,0 930,420 Z" fill="#2447C6" opacity="0.25" />
+  <line x1="80" y1="720" x2="820" y2="720" stroke="#F3C638" stroke-width="2" opacity="0.5" />
+  <line x1="450" y1="100" x2="450" y2="1100" stroke="#111C2D" stroke-width="1.5" stroke-dasharray="6 8" opacity="0.2" />
+
+  <!-- Cast Shadows of the Three Vessels -->
+  <ellipse cx="260" cy="850" rx="90" ry="24" fill="#0A0E17" opacity="0.4" />
+  <ellipse cx="480" cy="880" rx="80" ry="22" fill="#0A0E17" opacity="0.5" />
+  <ellipse cx="700" cy="830" rx="85" ry="20" fill="#06090F" opacity="0.6" />
+
+  <!-- Glass 1: Lowball Modern Rock Glass (Left - Red Drink Mood) -->
+  <g filter="url(#castShadow)">
+    <!-- Base Thickness -->
+    <rect x="180" y="650" width="160" height="170" rx="14" fill="url(#rubyRed)" />
+    <!-- Ice Cube Geometry inside -->
+    <rect x="210" y="670" width="80" height="80" rx="8" fill="#FFFFFF" opacity="0.3" transform="rotate(8 250 710)" />
+    <!-- Glass Rim & Walls -->
+    <rect x="176" y="630" width="168" height="194" rx="16" fill="none" stroke="url(#glassShine)" stroke-width="4" />
+    <ellipse cx="260" cy="630" rx="84" ry="12" fill="#FFFFFF" fill-opacity="0.15" stroke="#FFFFFF" stroke-width="1.5" />
+    <ellipse cx="260" cy="820" rx="76" ry="10" fill="#731109" opacity="0.8" />
+  </g>
+
+  <!-- Glass 2: Tall Slender Highball (Center - Translucent Gold Mood) -->
+  <g filter="url(#castShadow)">
+    <!-- Liquid Column -->
+    <path d="M430,420 L440,860 Q480,870 520,860 L530,420 Z" fill="url(#translucentGold)" />
+    <!-- Long Ice Spear -->
+    <rect x="466" y="440" width="28" height="380" rx="6" fill="#FFFFFF" opacity="0.35" />
+    <!-- Effervescence Micro-bubbles -->
+    <circle cx="455" cy="520" r="3" fill="#FFFFFF" opacity="0.6" />
+    <circle cx="495" cy="580" r="2.5" fill="#FFFFFF" opacity="0.7" />
+    <circle cx="475" cy="660" r="3.5" fill="#FFFFFF" opacity="0.5" />
+    <circle cx="460" cy="740" r="2" fill="#FFFFFF" opacity="0.8" />
+    <circle cx="500" cy="780" r="3" fill="#FFFFFF" opacity="0.6" />
+    <!-- Glass Contour & Rim -->
+    <path d="M425,410 L436,864 Q480,874 524,864 L535,410 Z" fill="none" stroke="url(#glassShine)" stroke-width="3.5" />
+    <ellipse cx="480" cy="410" rx="55" ry="10" fill="#FFFFFF" fill-opacity="0.2" stroke="#FFFFFF" stroke-width="1.5" />
+  </g>
+
+  <!-- Glass 3: Stemmed Modern Chalice / Coupe (Right - Rich Amber Tea Mood) -->
+  <g filter="url(#castShadow)">
+    <!-- Bowl Liquid -->
+    <path d="M620,540 Q620,670 700,670 Q780,670 780,540 Z" fill="url(#teaAmber)" />
+    <!-- Stem & Base -->
+    <line x1="700" y1="670" x2="700" y2="810" stroke="url(#glassShine)" stroke-width="7" />
+    <ellipse cx="700" cy="815" rx="60" ry="12" fill="none" stroke="url(#glassShine)" stroke-width="4" />
+    <ellipse cx="700" cy="815" rx="58" ry="10" fill="#FFFFFF" opacity="0.1" />
+    <!-- Bowl Rim -->
+    <ellipse cx="700" cy="540" rx="80" ry="14" fill="#FFFFFF" fill-opacity="0.15" stroke="#FFFFFF" stroke-width="2" />
+    <path d="M618,540 Q618,675 700,675 Q782,675 782,540" fill="none" stroke="url(#glassShine)" stroke-width="3.5" />
+  </g>
+
+  <!-- Bauhaus Geometric Lighting Band Accent -->
+  <polygon points="0,1140 900,1080 900,1110 0,1170" fill="#E43D30" />
+</svg>

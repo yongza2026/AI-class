@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="100%" height="100%">
+  <defs>
+    <!-- Warm Background Prep Space -->
+    <linearGradient id="prepBackdrop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#222C3D" />
+      <stop offset="40%" stop-color="#182333" />
+      <stop offset="100%" stop-color="#0E1624" />
+    </linearGradient>
+
+    <!-- Warm Spotlight on Countertop -->
+    <radialGradient id="counterLight" cx="45%" cy="60%" r="55%">
+      <stop offset="0%" stop-color="#FFEBC2" stop-opacity="0.5" />
+      <stop offset="60%" stop-color="#C99B4B" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#0E1624" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Stainless Workbench Surface -->
+    <linearGradient id="benchMetal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#555E6B" />
+      <stop offset="35%" stop-color="#8E99A8" />
+      <stop offset="50%" stop-color="#CFD6DE" />
+      <stop offset="65%" stop-color="#76808E" />
+      <stop offset="100%" stop-color="#464F5B" />
+    </linearGradient>
+
+    <!-- Amber Fermentation Liquid -->
+    <linearGradient id="fermentAmber" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F2BE63" stop-opacity="0.75" />
+      <stop offset="60%" stop-color="#BA772B" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#6E380E" />
+    </linearGradient>
+
+    <!-- Warm Hand Skin Tone -->
+    <linearGradient id="handSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5BE9F" />
+      <stop offset="60%" stop-color="#C99878" />
+      <stop offset="100%" stop-color="#9C6B4E" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Dark Atmosphere -->
+  <rect width="1600" height="1000" fill="url(#prepBackdrop)" />
+  <rect width="1600" height="1000" fill="url(#counterLight)" />
+
+  <!-- Bauhaus Circle & Arc Elements in Architecture Background -->
+  <circle cx="1180" cy="300" r="160" fill="#E43D30" opacity="0.2" />
+  <path d="M 280,240 A 130,130 0 0,1 540,240 Z" fill="#2447C6" opacity="0.25" />
+  <line x1="100" y1="420" x2="1500" y2="420" stroke="#F3C638" stroke-width="2" opacity="0.4" />
+
+  <!-- Stainless Steel Work Surface (Angled Perspective) -->
+  <polygon points="0,580 1600,530 1600,1000 0,1000" fill="url(#benchMetal)" />
+  <line x1="0" y1="580" x2="1600" y2="530" stroke="#FFFFFF" stroke-width="2" opacity="0.8" />
+
+  <!-- Glass Fermentation Jar 1 (Left Background) -->
+  <g opacity="0.9">
+    <rect x="220" y="320" width="130" height="240" rx="20" fill="url(#fermentAmber)" />
+    <!-- Glass Reflections -->
+    <rect x="230" y="330" width="18" height="210" rx="9" fill="#FFFFFF" opacity="0.4" />
+    <rect x="240" y="295" width="90" height="30" rx="8" fill="#3A2B20" />
+    <!-- Subtle Botanical Branch inside liquid -->
+    <path d="M285,520 Q290,440 270,390" stroke="#482510" stroke-width="4" stroke-linecap="round" fill="none" />
+    <circle cx="270" cy="420" r="10" fill="#E43D30" opacity="0.7" />
+    <circle cx="295" cy="450" r="9" fill="#F3C638" opacity="0.7" />
+  </g>
+
+  <!-- Glass Fermentation Jar 2 (Center-Left) -->
+  <g opacity="0.95">
+    <rect x="400" y="380" width="160" height="210" rx="24" fill="url(#fermentAmber)" />
+    <rect x="415" y="390" width="22" height="180" rx="10" fill="#FFFFFF" opacity="0.4" />
+    <rect x="430" y="350" width="100" height="34" rx="8" fill="#555E6B" />
+  </g>
+
+  <!-- Stainless Mixing Beaker / Measuring Vessel -->
+  <g>
+    <polygon points="620,440 760,440 740,640 640,640" fill="#8E99A8" />
+    <polygon points="630,440 680,440 665,640 640,640" fill="#555E6B" />
+    <polygon points="710,440 750,440 735,640 715,640" fill="#CFD6DE" />
+    <!-- Lip Spout -->
+    <path d="M620,440 L600,432 L625,444 Z" fill="#CFD6DE" />
+    <ellipse cx="690" cy="440" rx="70" ry="12" fill="#555E6B" stroke="#CFD6DE" stroke-width="2" />
+  </g>
+
+  <!-- Fresh Seasonal Ingredients on Cedar Prep Board -->
+  <!-- Dark Wood Board -->
+  <polygon points="760,610 1280,590 1340,780 790,820" fill="#2E1C12" stroke="#472E21" stroke-width="3" />
+  <!-- Seasonal Botanical / Citrus / Twig Motifs -->
+  <ellipse cx="900" cy="690" rx="36" ry="30" fill="#D95338" />
+  <circle cx="950" cy="710" r="26" fill="#F3C638" />
+  <ellipse cx="1020" cy="680" rx="30" ry="24" fill="#C93B2B" />
+  <path d="M880,720 Q1060,670 1140,700" stroke="#4F7942" stroke-width="5" stroke-linecap="round" fill="none" />
+  <ellipse cx="1090" cy="695" rx="14" ry="7" fill="#5A8F4C" transform="rotate(-25 1090 695)" />
+  <ellipse cx="1040" cy="685" rx="14" ry="7" fill="#5A8F4C" transform="rotate(35 1040 685)" />
+
+  <!-- The Bartender / Beverage Director's Hands (In Action, Face Hidden) -->
+  <!-- Left Hand Gently Holding Vessel Rim -->
+  <g>
+    <!-- Forearm entering from upper-right / right side -->
+    <path d="M1200,460 L1450,490 L1430,570 L1180,520 Z" fill="#111C2D" /> <!-- Navy linen chef/bartender sleeve -->
+    <path d="M1180,510 L1120,530 L1080,550 L1050,560 L1040,550 L1070,525 L1110,505 L1180,495 Z" fill="url(#handSkin)" />
+    <!-- Fingers stabilizing -->
+    <path d="M1040,550 Q1025,565 1020,580 L1035,585 Q1045,570 1055,560 Z" fill="#B58564" />
+  </g>
+
+  <!-- Right Hand with Fine Bar Spoon / Tweezers -->
+  <g>
+    <!-- Right Sleeve entering from left-mid -->
+    <path d="M480,680 L580,650 L610,720 L500,760 Z" fill="#111C2D" />
+    <!-- Wrist and Hand -->
+    <path d="M580,655 L680,635 L710,645 L730,665 L700,690 L660,695 L605,715 Z" fill="url(#handSkin)" />
+    <!-- Slender Stainless Bar Tool -->
+    <line x1="680" y1="580" x2="860" y2="690" stroke="#CFD6DE" stroke-width="4" stroke-linecap="round" />
+    <circle cx="862" cy="692" r="5" fill="#E43D30" />
+  </g>
+
+  <!-- Bauhaus Circular Motion Overlay - Circular / Sustainable Theme -->
+  <path d="M 1320,660 A 90,90 0 1,1 1260,560" fill="none" stroke="#F3C638" stroke-width="2.5" stroke-dasharray="8 6" opacity="0.7" />
+  <polygon points="1260,550 1265,575 1250,565" fill="#F3C638" />
+
+  <!-- Subtle Studio Lighting Texture -->
+  <rect width="1600" height="1000" fill="#0A0E17" opacity="0.15" />
+</svg>
