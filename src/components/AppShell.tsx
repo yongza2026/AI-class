@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Box, Coffee, Database, MenuSquare, ReceiptText, WalletCards } from "lucide-react";
+import { BarChart3, Box, Calculator, Coffee, Database, MenuSquare, ReceiptText, WalletCards } from "lucide-react";
 import { useCafeData } from "./DataProvider";
 
 const nav = [
   ["/", "대시보드", BarChart3], ["/sales", "판매 기록", ReceiptText], ["/profitability", "메뉴 수익성", Coffee],
-  ["/inventory", "재고 관리", Box], ["/expenses", "비용 기록", WalletCards], ["/data", "데이터 관리", Database],
+  ["/inventory", "재고 관리", Box], ["/expenses", "비용 기록", WalletCards], ["/costs", "원가 관리", Calculator], ["/data", "데이터 관리", Database],
 ] as const;
 
 export function AppShell({ children }: { children: React.ReactNode }) {
