@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { BarChart3, Box, Calculator, Coffee, Database, ReceiptText, WalletCards } from "lucide-react";
 import { useCafeData } from "./DataProvider";
+import { LoginScreen } from "./LoginScreen";
 
 const nav = [
   ["/", "대시보드", BarChart3], ["/sales", "판매 기록", ReceiptText], ["/profitability", "메뉴 수익성", Coffee],
@@ -13,15 +14,18 @@ const nav = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { summary, supported } = useCafeData();
+  const { summary, supported, cloud, userEmail, access, authError, loading, reloadAuth, signOut } = useCafeData();
+  if (loading) return <main className="login-page"><section className="login-card"><p>운영자료를 불러오고 있습니다…</p></section></main>;
+  if (cloud && !userEmail) return <LoginScreen onSignedIn={reloadAuth}/>;
+  if (cloud && authError) return <main className="login-page"><section className="login-card"><h1>매장 접근 권한이 없습니다</h1><p>{authError}</p><button className="button primary" onClick={() => void reloadAuth()}>다시 확인</button><button className="button secondary" onClick={() => void signOut()}>다른 계정으로 로그인</button></section></main>;
   return <div className="app-shell">
     <aside className="sidebar">
       <Link className="brand" href="/" aria-label="POCO 운영관리 홈"><Image src="/poco-logo.svg" width={132} height={40} alt="POCO" priority/><span>LOCAL DRINK HOUSE<small>OPERATIONS</small></span></Link>
       <nav aria-label="주요 메뉴">
         {nav.map(([href, label, Icon]) => <Link key={href} href={href} className={pathname === href ? "active" : ""}><Icon size={18}/><span>{label}</span></Link>)}
       </nav>
-      <div className="side-status"><span className={supported ? "dot ok" : "dot bad"}/>{supported ? "이 기기에 자동 저장" : "저장 기능 사용 불가"}<small>{summary ? `${summary.storeName} · ${summary.totalRecords.toLocaleString()}건` : "저장된 자료 없음"}</small></div>
+      <div className="side-status"><span className={supported ? "dot ok" : "dot bad"}/>{cloud ? "공용 자료 자동 저장" : supported ? "이 기기에 자동 저장" : "저장 기능 사용 불가"}<small>{summary ? `${summary.storeName} · ${summary.totalRecords.toLocaleString()}건` : "저장된 자료 없음"}</small></div>
     </aside>
-    <div className="workspace"><header className="topbar"><div><strong>{summary?.storeName ?? "POCO Operations"}</strong><span>{summary?.dataClass ?? "Where Flavors Connect."}</span></div><div className="top-actions"><Link className="button secondary compact" href="/sales/new">판매 입력</Link><Link className="button secondary compact" href="/inventory/new">재고 기록</Link><Link className="button secondary compact" href="/data">데이터 관리</Link></div></header><main>{children}</main></div>
+    <div className="workspace"><header className="topbar"><div><strong>{summary?.storeName ?? access?.storeName ?? "POCO Operations"}</strong><span>{summary?.dataClass ?? "Where Flavors Connect."}</span></div><div className="top-actions"><Link className="button secondary compact" href="/sales/new">판매 입력</Link><Link className="button secondary compact" href="/inventory/new">재고 기록</Link><Link className="button secondary compact" href="/data">데이터 관리</Link>{cloud && <button className="button secondary compact" onClick={() => void signOut()}>로그아웃</button>}</div></header><main>{children}</main></div>
   </div>;
 }
