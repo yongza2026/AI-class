@@ -67,7 +67,7 @@ export async function parseExcel(file: File): Promise<{ data?: CafeDataset; issu
 export async function downloadExcelTemplate(): Promise<void> {
   const ExcelJS = await import("exceljs");
   const workbook = new ExcelJS.Workbook();
-  workbook.creator = "카페 운영관리";
+  workbook.creator = "POCO Operations";
   const guide = workbook.addWorksheet("데이터안내");
   guide.addRows([["카페 운영자료 가져오기 양식"], ["작성 방법"], ["각 시트의 첫 행 이름과 순서를 바꾸지 마세요."], ["날짜 예시: 2026-10-12 / 영업여부 예시: TRUE"], ["예시는 이 안내 시트에만 있으며 운영자료로 가져오지 않습니다."]]);
   guide.getColumn(1).width = 72;
