@@ -108,8 +108,8 @@ grant execute on function public.replace_store_dataset(jsonb, jsonb) to authenti
 grant execute on function public.clear_sample_dataset() to authenticated;
 
 insert into public.stores(id, name) values('00000000-0000-4000-8000-000000000001', 'POCO') on conflict(id) do update set name = excluded.name;
-insert into public.allowed_users(email, store_id, role) values('oran99@ecojv.com', '00000000-0000-4000-8000-000000000001', 'owner')
+insert into public.allowed_users(email, store_id, role) values('yong201712@gmail.com', '00000000-0000-4000-8000-000000000001', 'owner')
 on conflict(email) do update set store_id = excluded.store_id, role = excluded.role;
 insert into public.store_members(store_id, user_id, role)
-select '00000000-0000-4000-8000-000000000001', id, 'owner' from auth.users where lower(email) = 'oran99@ecojv.com'
+select '00000000-0000-4000-8000-000000000001', id, 'owner' from auth.users where lower(email) = 'yong201712@gmail.com'
 on conflict(store_id, user_id) do update set role = excluded.role;
