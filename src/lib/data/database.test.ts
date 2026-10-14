@@ -1,7 +1,7 @@
 import "fake-indexeddb/auto";
 import { afterAll, describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { db, deleteRecord, readDataset, replaceDataset, saveRecord } from "./database";
+import { clearSampleDataset, db, deleteRecord, readDataset, replaceDataset, saveRecord } from "./database";
 import { normalizeExternalJson } from "./normalize";
 import { validateDataset } from "./schema";
 
@@ -21,6 +21,15 @@ describe("IndexedDB 저장", () => {
     expect((await readDataset())?.sales.some((row) => row.saleId === "S-TEST")).toBe(true);
     await deleteRecord("sales", "S-TEST");
     expect((await readDataset())?.sales.some((row) => row.saleId === "S-TEST")).toBe(false);
+  });
+  it("가상 샘플 자료 전체를 삭제한다", async () => {
+    await clearSampleDataset();
+    expect(await readDataset()).toBeNull();
+  });
+  it("실제 매장 자료는 샘플 삭제 기능으로 지우지 않는다", async () => {
+    await replaceDataset({ ...sample, meta: { ...sample.meta, dataClass: "실제 매장" } });
+    await expect(clearSampleDataset()).rejects.toThrow("가상 샘플 자료만");
+    expect((await readDataset())?.meta.dataClass).toBe("실제 매장");
   });
 });
 

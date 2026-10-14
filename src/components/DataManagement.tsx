@@ -1,10 +1,10 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { AlertTriangle, CheckCircle2, Database, Download, FileJson, FileSpreadsheet, Upload } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Database, Download, FileJson, FileSpreadsheet, Trash2, Upload } from "lucide-react";
 import { useCafeData } from "./DataProvider";
 import { createBackup, parseBackup } from "@/lib/data/backup";
-import { readDataset, replaceDataset } from "@/lib/data/database";
+import { clearSampleDataset, readDataset, replaceDataset } from "@/lib/data/database";
 import { downloadBlob, downloadExcelTemplate, parseExcel } from "@/lib/data/excel";
 import { normalizeExternalJson } from "@/lib/data/normalize";
 import { validateDataset } from "@/lib/data/schema";
@@ -76,6 +76,17 @@ export function DataManagement() {
     });
   }
 
+  async function removeSample() {
+    if (!summary?.dataClass.includes("샘플")) return;
+    if (!confirm("현재 브라우저에 저장된 가상 샘플 자료를 삭제할까요?")) return;
+    if (!confirm("샘플에서 직접 추가하거나 수정한 기록도 함께 삭제됩니다. 정말 삭제할까요?")) return;
+    await run(async () => {
+      await clearSampleDataset();
+      await refresh();
+      setMessage({ kind: "success", text: "가상 샘플 자료를 삭제했습니다. 이제 실제 매장 자료를 가져올 수 있습니다." });
+    });
+  }
+
   async function run(action: () => Promise<void>) {
     setBusy(true); setIssues([]); setPending(null);
     try { await action(); } catch (error) { setMessage({ kind: "error", text: error instanceof Error ? error.message : "처리 중 오류가 발생했습니다. 기존 자료는 유지됩니다." }); }
@@ -91,6 +102,7 @@ export function DataManagement() {
       <ActionCard icon={FileSpreadsheet} title="엑셀 양식과 가져오기" text="정해진 12개 시트의 양식을 받고, 작성한 전체 자료를 검사한 뒤 교체합니다."><button disabled={busy} className="button secondary" onClick={() => run(downloadExcelTemplate)}><Download size={16}/>엑셀 양식 다운로드</button><button disabled={busy} className="button primary" onClick={() => excelRef.current?.click()}><Upload size={16}/>엑셀 전체 가져오기</button><input ref={excelRef} hidden type="file" accept=".xlsx" onChange={(e) => { void onExcel(e.target.files?.[0]); e.currentTarget.value = ""; }}/></ActionCard>
       <ActionCard icon={FileJson} title="JSON 전체 백업과 복원" text="현재 자료 전체를 한 파일로 보관하거나, 이 프로그램의 백업 파일로 되돌립니다."><button disabled={busy || !summary} className="button secondary" onClick={backup}><Download size={16}/>전체 백업 다운로드</button><button disabled={busy} className="button primary" onClick={() => jsonRef.current?.click()}><Upload size={16}/>JSON 전체 복원</button><input ref={jsonRef} hidden type="file" accept="application/json,.json" onChange={(e) => { void onRestore(e.target.files?.[0]); e.currentTarget.value = ""; }}/></ActionCard>
       <ActionCard icon={Database} title="가상 샘플" text="프렙 카페 예시 자료로 저장·가져오기·백업 흐름을 확인합니다."><span className="badge pending">실제 매장 자료 아님</span><button disabled={busy || !supported} className="button primary" onClick={loadSample}>{summary ? "샘플로 전체 교체" : "샘플 불러오기"}</button></ActionCard>
+      {summary?.dataClass.includes("샘플") && <ActionCard icon={Trash2} title="샘플 자료 삭제" text="현재 브라우저에 저장된 가상 샘플 전체를 지우고 빈 상태로 시작합니다."><span className="badge pending">샘플에서 수정한 기록도 삭제</span><button disabled={busy} className="button danger" onClick={removeSample}><Trash2 size={16}/>샘플 자료 삭제</button></ActionCard>}
     </div>
     {issues.length > 0 && <div className="card error-list"><h2>고쳐야 할 항목 ({issues.length}건)</h2><p>한 건이라도 오류가 있으면 기존 자료를 전혀 바꾸지 않습니다.</p><div className="table-wrap"><table><thead><tr><th>시트</th><th>행</th><th>열</th><th>입력값</th><th>이유</th></tr></thead><tbody>{issues.map((issue,index)=><tr key={index}><td>{issue.sheet}</td><td>{issue.row ?? "-"}</td><td>{issue.column ?? "-"}</td><td>{issue.value == null ? "-" : String(issue.value)}</td><td>{issue.message}</td></tr>)}</tbody></table></div></div>}
     <div className="security-note"><ShieldIcon/><div><strong>백업 안내</strong><p>브라우저 자료 삭제나 기기 고장 때는 자동 복구되지 않습니다. 작업 후 JSON 백업을 내려받으세요. 백업은 평문이므로 공개 저장소나 공유 폴더에 올리지 마세요.</p></div></div>

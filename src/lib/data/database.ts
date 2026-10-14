@@ -52,6 +52,17 @@ export async function replaceDataset(data: CafeDataset): Promise<void> {
   });
 }
 
+export async function clearSampleDataset(): Promise<void> {
+  const meta = await db.meta.get("current");
+  if (!meta || !meta.dataClass.includes("샘플")) {
+    throw new Error("가상 샘플 자료만 이 기능으로 삭제할 수 있습니다.");
+  }
+  const stores = [db.meta, ...tableNames.map((name) => db.table(name))];
+  await db.transaction("rw", stores, async () => {
+    await Promise.all(stores.map((table) => table.clear()));
+  });
+}
+
 export async function readDataset(): Promise<CafeDataset | null> {
   const meta = await db.meta.get("current");
   if (!meta) return null;
