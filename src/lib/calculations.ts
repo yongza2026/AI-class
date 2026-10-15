@@ -81,7 +81,9 @@ export function calculateInventory(data: CafeDataset): InventoryRow[] {
     for(const sale of data.sales) if(!last?s(sale,"date")>=cutoff:s(sale,"date")>cutoff) current-=usageFor(sale);
     const used=closedDays.reduce((sum,date)=>sum+data.sales.filter((sale)=>sale.date===date).reduce((x,sale)=>x+usageFor(sale),0),0);
     const dailyUsage=closedDays.length?used/closedDays.length:null;
-    const target=dailyUsage&&dailyUsage>0?dailyUsage*(n(material,"leadDays")+n(material,"safetyDays")):null;
+    const configuredTarget = material.targetStock == null || material.targetStock === "" ? null : n(material,"targetStock");
+    const configuredSafety = material.safetyStock == null || material.safetyStock === "" ? 0 : n(material,"safetyStock");
+    const target=configuredTarget ?? (dailyUsage&&dailyUsage>0?dailyUsage*(n(material,"leadDays")+n(material,"safetyDays"))+configuredSafety:null);
     const shortage=target!==null&&current<target; const pack=n(material,"packQuantity");
     const orderQuantity=dailyUsage&&dailyUsage>0?Math.ceil(Math.max(0,(target??0)-current)/pack)*pack:null;
     return {materialId,name:s(material,"name"),unit,current,lastCount:last?s(last,"date"):null,dailyUsage,daysLeft:dailyUsage&&dailyUsage>0?current/dailyUsage:null,target,shortage,orderQuantity,packQuantity:pack};

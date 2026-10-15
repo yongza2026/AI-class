@@ -1,4 +1,6 @@
 create extension if not exists pgcrypto;
+create schema if not exists private;
+revoke all on schema private from public, anon, authenticated;
 
 create table if not exists public.stores (
   id uuid primary key default gen_random_uuid(),
@@ -40,14 +42,26 @@ create table if not exists public.store_records (
 );
 
 create index if not exists store_records_collection_idx on public.store_records(store_id, collection);
+create index if not exists allowed_users_store_id_idx on public.allowed_users(store_id);
+create index if not exists store_members_user_id_idx on public.store_members(user_id);
+create index if not exists store_datasets_updated_by_idx on public.store_datasets(updated_by);
+create index if not exists store_records_updated_by_idx on public.store_records(updated_by);
 
-create or replace function public.is_store_member(target_store uuid)
-returns boolean language sql stable security definer set search_path = public
-as $$ select exists(select 1 from public.store_members where store_id = target_store and user_id = auth.uid()) $$;
+create or replace function private.is_store_member(target_store uuid)
+returns boolean language sql stable security definer set search_path = ''
+as $$ select exists(select 1 from public.store_members where store_id = target_store and user_id = (select auth.uid())) $$;
 
-create or replace function public.can_edit_store(target_store uuid)
-returns boolean language sql stable security definer set search_path = public
-as $$ select exists(select 1 from public.store_members where store_id = target_store and user_id = auth.uid() and role in ('owner','editor')) $$;
+create or replace function private.can_edit_store(target_store uuid)
+returns boolean language sql stable security definer set search_path = ''
+as $$ select exists(select 1 from public.store_members where store_id = target_store and user_id = (select auth.uid()) and role in ('owner','editor')) $$;
+
+create or replace function private.is_store_owner(target_store uuid)
+returns boolean language sql stable security definer set search_path = ''
+as $$ select exists(select 1 from public.store_members where store_id = target_store and user_id = (select auth.uid()) and role = 'owner') $$;
+
+revoke execute on function private.is_store_member(uuid) from public, anon, authenticated, service_role;
+revoke execute on function private.can_edit_store(uuid) from public, anon, authenticated, service_role;
+revoke execute on function private.is_store_owner(uuid) from public, anon, authenticated, service_role;
 
 alter table public.stores enable row level security;
 alter table public.allowed_users enable row level security;
@@ -55,33 +69,35 @@ alter table public.store_members enable row level security;
 alter table public.store_datasets enable row level security;
 alter table public.store_records enable row level security;
 
-create policy "members read stores" on public.stores for select to authenticated using (public.is_store_member(id));
-create policy "members read own membership" on public.store_members for select to authenticated using (user_id = auth.uid());
-create policy "members read dataset" on public.store_datasets for select to authenticated using (public.is_store_member(store_id));
-create policy "editors insert dataset" on public.store_datasets for insert to authenticated with check (public.can_edit_store(store_id));
-create policy "editors update dataset" on public.store_datasets for update to authenticated using (public.can_edit_store(store_id)) with check (public.can_edit_store(store_id));
-create policy "members read records" on public.store_records for select to authenticated using (public.is_store_member(store_id));
-create policy "editors insert records" on public.store_records for insert to authenticated with check (public.can_edit_store(store_id));
-create policy "editors update records" on public.store_records for update to authenticated using (public.can_edit_store(store_id)) with check (public.can_edit_store(store_id));
-create policy "editors delete records" on public.store_records for delete to authenticated using (public.can_edit_store(store_id));
+create policy "members read stores" on public.stores for select to authenticated using ((select private.is_store_member(id)));
+create policy "deny client access to allowlist" on public.allowed_users for all to authenticated using (false) with check (false);
+create policy "members read own membership" on public.store_members for select to authenticated using (user_id = (select auth.uid()));
+create policy "members read dataset" on public.store_datasets for select to authenticated using ((select private.is_store_member(store_id)));
+create policy "editors insert dataset" on public.store_datasets for insert to authenticated with check ((select private.can_edit_store(store_id)));
+create policy "editors update dataset" on public.store_datasets for update to authenticated using ((select private.can_edit_store(store_id))) with check ((select private.can_edit_store(store_id)));
+create policy "owners delete dataset" on public.store_datasets for delete to authenticated using ((select private.is_store_owner(store_id)));
+create policy "members read records" on public.store_records for select to authenticated using ((select private.is_store_member(store_id)));
+create policy "editors insert records" on public.store_records for insert to authenticated with check ((select private.can_edit_store(store_id)));
+create policy "editors update records" on public.store_records for update to authenticated using ((select private.can_edit_store(store_id))) with check ((select private.can_edit_store(store_id)));
+create policy "editors delete records" on public.store_records for delete to authenticated using ((select private.can_edit_store(store_id)));
 
-create or replace function public.set_record_audit()
+create or replace function private.set_record_audit()
 returns trigger language plpgsql security invoker set search_path = public
 as $$ begin new.updated_at = now(); new.updated_by = auth.uid(); return new; end $$;
-create trigger store_records_audit before insert or update on public.store_records for each row execute function public.set_record_audit();
+create trigger store_records_audit before insert or update on public.store_records for each row execute function private.set_record_audit();
 
-create or replace function public.handle_approved_user()
-returns trigger language plpgsql security definer set search_path = public
+create or replace function private.handle_approved_user()
+returns trigger language plpgsql security definer set search_path = ''
 as $$ begin
   insert into public.store_members(store_id, user_id, role)
   select store_id, new.id, role from public.allowed_users where email = lower(new.email)
   on conflict (store_id, user_id) do update set role = excluded.role;
   return new;
 end $$;
-create trigger approved_user_membership after insert or update of email on auth.users for each row execute function public.handle_approved_user();
+create trigger approved_user_membership after insert or update of email on auth.users for each row execute function private.handle_approved_user();
 
 create or replace function public.replace_store_dataset(p_meta jsonb, p_records jsonb)
-returns void language plpgsql security definer set search_path = public
+returns void language plpgsql security invoker set search_path = public
 as $$ declare target_store uuid; begin
   select store_id into target_store from public.store_members where user_id = auth.uid() and role in ('owner','editor') order by created_at limit 1;
   if target_store is null then raise exception '편집 권한이 없습니다.'; end if;
@@ -94,7 +110,7 @@ as $$ declare target_store uuid; begin
 end $$;
 
 create or replace function public.clear_sample_dataset()
-returns void language plpgsql security definer set search_path = public
+returns void language plpgsql security invoker set search_path = public
 as $$ declare target_store uuid; sample_class text; begin
   select store_id into target_store from public.store_members where user_id = auth.uid() and role = 'owner' order by created_at limit 1;
   if target_store is null then raise exception '관리자 권한이 없습니다.'; end if;
@@ -104,6 +120,13 @@ as $$ declare target_store uuid; sample_class text; begin
   delete from public.store_datasets where store_id = target_store;
 end $$;
 
+revoke all on public.stores, public.allowed_users, public.store_members, public.store_datasets, public.store_records from public, anon, authenticated;
+grant select on public.stores, public.store_members, public.store_datasets, public.store_records to authenticated;
+grant insert, update on public.store_datasets to authenticated;
+grant insert, update, delete on public.store_records to authenticated;
+grant delete on public.store_datasets to authenticated;
+revoke execute on function public.replace_store_dataset(jsonb, jsonb) from public, anon;
+revoke execute on function public.clear_sample_dataset() from public, anon;
 grant execute on function public.replace_store_dataset(jsonb, jsonb) to authenticated;
 grant execute on function public.clear_sample_dataset() to authenticated;
 

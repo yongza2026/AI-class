@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { CafeDataset, DatasetSummary, DatasetTable, ImportIssue } from "./types";
+import { migrateDataset } from "./migration";
 
 const text = z.string().trim().min(1);
 const dateText = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
@@ -24,7 +25,7 @@ const supplierSchema = z.object({ supplierId: text, name: text, dataClass: text 
 const materialSchema = z.object({
   materialId: text, name: text, unit: text, packQuantity: positive, basePackPrice: nonNegative,
   leadDays: z.number().int().nonnegative(), safetyDays: z.number().int().nonnegative(), supplierId: text,
-});
+}).passthrough();
 const menuSchema = z.object({ menuId: text, name: text, price: nonNegative, category: text, recipeVersion: text });
 const recipeSchema = z.object({ recipeVersion: text, menuId: text, materialId: text, quantity: nonNegative, unit: text, channelOnly: z.string().nullable().optional() });
 const priceSchema = z.object({ materialId: text, effectiveDate: dateText, packPrice: nonNegative, packQuantity: positive });
@@ -36,17 +37,19 @@ const saleSchema = z.object({
 });
 const openingSchema = z.object({ materialId: text, date: dateText, quantity: nonNegative, unit: text });
 const eventSchema = z.object({
-  eventId: text, date: dateText, materialId: text, eventType: z.enum(["입고", "폐기", "실사조정"]),
+  eventId: text, date: dateText, materialId: text, eventType: z.enum(["입고", "폐기", "실사조정", "수동사용", "제조투입", "제조완성"]),
   quantity: z.number().finite(), unit: text, reason: z.string().nullable().optional(), unitCost: z.number().nonnegative().nullable().optional(),
   supplierId: z.string().nullable().optional(), countedQuantity: z.number().nonnegative().nullable().optional(),
-}).superRefine((row, context) => {
+}).passthrough().superRefine((row, context) => {
   if (row.eventType === "입고" && row.quantity <= 0) context.addIssue({ code: "custom", path: ["quantity"], message: "입고 수량은 양수여야 합니다." });
   if (row.eventType === "폐기" && row.quantity >= 0) context.addIssue({ code: "custom", path: ["quantity"], message: "폐기 수량은 음수여야 합니다." });
+  if ((row.eventType === "수동사용" || row.eventType === "제조투입") && row.quantity >= 0) context.addIssue({ code: "custom", path: ["quantity"], message: "사용 수량은 음수여야 합니다." });
   if (row.eventType === "실사조정" && row.countedQuantity == null) context.addIssue({ code: "custom", path: ["countedQuantity"], message: "실사조정에는 실측수량이 필요합니다." });
 });
 const expenseSchema = z.object({ expenseId: text, date: dateText, category: text, amount: nonNegative, recognition: text });
 const monthlySchema = z.object({ month: monthText, category: text, amount: nonNegative });
 const settingSchema = z.object({ key: text, value: z.union([z.string(), z.number(), z.boolean(), z.null()]) });
+const looseRowSchema = z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null(), z.undefined()]));
 
 export const datasetSchema = z.object({
   meta: metaSchema,
@@ -54,9 +57,10 @@ export const datasetSchema = z.object({
   recipes: z.array(recipeSchema), priceHistory: z.array(priceSchema), calendar: z.array(calendarSchema),
   sales: z.array(saleSchema), openingInventory: z.array(openingSchema), inventoryEvents: z.array(eventSchema),
   expenses: z.array(expenseSchema), monthlyExpensePlan: z.array(monthlySchema), settings: z.array(settingSchema),
+  purchaseLots: z.array(looseRowSchema), productionBatches: z.array(looseRowSchema), bottleStates: z.array(looseRowSchema), auditLog: z.array(looseRowSchema),
 });
 
-const tables: DatasetTable[] = ["suppliers", "materials", "menus", "recipes", "priceHistory", "calendar", "sales", "openingInventory", "inventoryEvents", "expenses", "monthlyExpensePlan", "settings"];
+const tables: DatasetTable[] = ["suppliers", "materials", "menus", "recipes", "priceHistory", "calendar", "sales", "openingInventory", "inventoryEvents", "expenses", "monthlyExpensePlan", "settings", "purchaseLots", "productionBatches", "bottleStates", "auditLog"];
 
 function duplicate(values: string[]): string | undefined {
   const seen = new Set<string>();
@@ -64,7 +68,7 @@ function duplicate(values: string[]): string | undefined {
 }
 
 export function validateDataset(input: unknown): { data?: CafeDataset; issues: ImportIssue[] } {
-  const result = datasetSchema.safeParse(input);
+  const result = datasetSchema.safeParse(migrateDataset(input));
   if (!result.success) {
     return { issues: result.error.issues.slice(0, 100).map((issue) => ({ sheet: String(issue.path[0] ?? "파일"), row: typeof issue.path[1] === "number" ? issue.path[1] + 2 : undefined, column: String(issue.path.at(-1) ?? ""), message: issue.message })) };
   }

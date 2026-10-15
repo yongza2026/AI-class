@@ -12,7 +12,7 @@ const maps: Record<string, Record<string, string>> = {
   openingInventory: { material_id: "materialId" },
   inventoryEvents: { event_id: "eventId", material_id: "materialId", event_type: "eventType", unit_cost: "unitCost", supplier_id: "supplierId", counted_quantity: "countedQuantity" },
   expenses: { expense_id: "expenseId" },
-  monthlyExpensePlan: {}, settings: {},
+  monthlyExpensePlan: {}, settings: {}, purchaseLots: {}, productionBatches: {}, bottleStates: {}, auditLog: {},
 };
 maps.monthlyExpensePlan = { month: "month" };
 
@@ -36,7 +36,7 @@ export function normalizeExternalJson(input: unknown): unknown {
   if (!input || typeof input !== "object") return input;
   const source = input as Record<string, unknown>;
   if (source.data && source.backupFormat) return source;
-  const aliases: Record<string, string> = { price_history: "priceHistory", opening_inventory: "openingInventory", inventory_events: "inventoryEvents", monthly_expense_plan: "monthlyExpensePlan" };
+  const aliases: Record<string, string> = { price_history: "priceHistory", opening_inventory: "openingInventory", inventory_events: "inventoryEvents", monthly_expense_plan: "monthlyExpensePlan", purchase_lots: "purchaseLots", production_batches: "productionBatches", bottle_states: "bottleStates", audit_log: "auditLog" };
   const out: Record<string, unknown> = {};
   for (const [rawKey, value] of Object.entries(source)) {
     const key = aliases[rawKey] ?? rawKey;

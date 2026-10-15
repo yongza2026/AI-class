@@ -19,6 +19,10 @@ class CafeDatabase extends Dexie {
   expenses!: Table<DataRow, string>;
   monthlyExpensePlan!: Table<DataRow, [string, string]>;
   settings!: Table<DataRow, string>;
+  purchaseLots!: Table<DataRow, string>;
+  productionBatches!: Table<DataRow, string>;
+  bottleStates!: Table<DataRow, string>;
+  auditLog!: Table<DataRow, string>;
 
   constructor() {
     super("cafe-operations");
@@ -37,17 +41,30 @@ class CafeDatabase extends Dexie {
       monthlyExpensePlan: "[month+category],month,category",
       settings: "key",
     });
+    this.version(2).stores({
+      meta: "id", suppliers: "supplierId", materials: "materialId,supplierId,category,active",
+      menus: "menuId,name", recipes: "[recipeVersion+menuId+materialId],menuId,materialId",
+      priceHistory: "[materialId+effectiveDate],materialId,effectiveDate", calendar: "date,isOpen,recordComplete",
+      sales: "saleId,date,menuId,channel,[date+menuId+channel]", openingInventory: "materialId,date",
+      inventoryEvents: "eventId,date,materialId,eventType,sourceType,sourceId", expenses: "expenseId,date,category",
+      monthlyExpensePlan: "[month+category],month,category", settings: "key",
+      purchaseLots: "lotId,date,materialId,supplierId,status,purchaseId",
+      productionBatches: "batchId,productionDate,outputMaterialId,status,expiryDate",
+      bottleStates: "bottleId,materialId,status,openedAt,location",
+      auditLog: "auditId,occurredAt,table,recordId,action",
+    });
   }
 }
 
 export const db = new CafeDatabase();
 
-const tableNames: DatasetTable[] = ["suppliers", "materials", "menus", "recipes", "priceHistory", "calendar", "sales", "openingInventory", "inventoryEvents", "expenses", "monthlyExpensePlan", "settings"];
+const tableNames: DatasetTable[] = ["suppliers", "materials", "menus", "recipes", "priceHistory", "calendar", "sales", "openingInventory", "inventoryEvents", "expenses", "monthlyExpensePlan", "settings", "purchaseLots", "productionBatches", "bottleStates", "auditLog"];
 
 const recordKeys: Record<DatasetTable, string[]> = {
   suppliers: ["supplierId"], materials: ["materialId"], menus: ["menuId"], recipes: ["recipeVersion", "menuId", "materialId"],
   priceHistory: ["materialId", "effectiveDate"], calendar: ["date"], sales: ["saleId"], openingInventory: ["materialId", "date"],
   inventoryEvents: ["eventId"], expenses: ["expenseId"], monthlyExpensePlan: ["month", "category"], settings: ["key"],
+  purchaseLots: ["lotId"], productionBatches: ["batchId"], bottleStates: ["bottleId"], auditLog: ["auditId"],
 };
 
 function recordKey(table: DatasetTable, row: DataRow): string {
@@ -130,7 +147,7 @@ export async function storageAvailable(): Promise<boolean> {
   try { await db.open(); return true; } catch { return false; }
 }
 
-export async function saveRecord(table: "sales" | "expenses" | "inventoryEvents", row: DataRow): Promise<void> {
+export async function saveRecord(table: DatasetTable, row: DataRow): Promise<void> {
   if (cloudConfigured()) {
     const { storeId } = await getStoreAccess();
     const { error } = await getSupabase().from("store_records").upsert({ store_id: storeId, collection: table, record_key: recordKey(table, row), payload: row });
@@ -139,7 +156,7 @@ export async function saveRecord(table: "sales" | "expenses" | "inventoryEvents"
   await db.table(table).put(row);
 }
 
-export async function deleteRecord(table: "sales" | "expenses" | "inventoryEvents", id: string): Promise<void> {
+export async function deleteRecord(table: DatasetTable, id: string): Promise<void> {
   if (cloudConfigured()) {
     const { storeId } = await getStoreAccess();
     const { error } = await getSupabase().from("store_records").delete().eq("store_id", storeId).eq("collection", table).eq("record_key", id);

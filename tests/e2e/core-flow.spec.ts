@@ -1,48 +1,30 @@
 import { expect, test } from "@playwright/test";
 
-test("샘플에서 판매 입력, 수익성, 비용, 재고, 손익으로 연결된다", async ({ page }) => {
-  await page.goto("/data");
-  await page.getByRole("button", { name: "샘플 불러오기" }).click();
-  await expect(page.getByText("프렙 카페 가상 샘플을 저장했습니다")).toBeVisible();
-  const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "엑셀 양식 다운로드" }).click();
-  expect((await downloadPromise).suggestedFilename()).toMatch(/^카페운영_가져오기양식_\d{8}\.xlsx$/);
-
-  await page.goto("/sales/new");
-  await page.waitForTimeout(1000);
-  await page.getByLabel("판매일자").fill("2026-09-19");
-  await page.locator("form select").nth(0).selectOption("M02");
-  await page.locator("form select").nth(1).selectOption("포장");
-  await page.getByLabel("판매수량").fill("15");
-  await page.getByLabel("실 결제금액").fill("70000");
-  await expect(page.getByText("72,000원")).toBeVisible();
-  await expect(page.getByText("1,050원")).toBeVisible();
-  await page.locator("form").getByRole("button", { name: "저장" }).click();
-  await expect(page.getByText("판매 기록이 저장되었습니다")).toBeVisible();
-
-  await page.goto("/profitability");
-  await page.getByLabel("기준 날짜").fill("2026-09-19");
-  await page.getByLabel("메뉴 검색").fill("카페라떼");
-  await expect(page.getByText("카페라떼").first()).toBeVisible();
-
-  await page.goto("/expenses");
-  await page.getByRole("button", { name: "비용 입력" }).click();
-  await page.getByLabel("날짜", { exact: true }).fill("2026-09-19");
-  await page.locator("form select").selectOption({ label: "광고비" });
-  await page.getByLabel("VAT 제외 금액").fill("12345");
-  await page.locator("form").getByRole("button", { name: "저장" }).click();
-  await expect(page.getByText("비용 기록이 저장되었습니다")).toBeVisible();
+test("빈 매장에서 품목을 만들고 700ml 3병을 입고한다", async ({ page }) => {
+  await page.goto("/inventory/items");
+  await page.getByRole("button", { name: /첫 품목 만들기|새 품목/ }).first().click();
+  await page.getByLabel("품목 이름").fill("테스트 진");
+  await page.getByLabel("브랜드").fill("POCO TEST");
+  await page.getByLabel("분류").selectOption("주류");
+  await page.getByLabel("기준 단위").selectOption("ml");
+  await page.getByLabel("포장 용량").fill("700");
+  await page.getByLabel("보관 위치").fill("백바 A");
+  await page.getByRole("button", { name: "저장" }).click();
+  await expect(page.getByText("테스트 진 품목을 추가했습니다.")).toBeVisible();
 
   await page.goto("/inventory/new");
-  await page.waitForTimeout(1000);
-  await page.getByLabel("날짜").fill("2026-09-19");
-  await page.locator("form select").nth(1).selectOption("I01");
-  await page.locator("form input[type=number]").first().fill("1000");
-  await page.locator("form").getByRole("button", { name: "저장" }).click();
-  await expect(page.getByText("재고 기록이 저장되었습니다")).toBeVisible();
+  await page.getByLabel("입력 방식").selectOption("구매 포장");
+  await page.getByLabel("구매 포장 수").fill("3");
+  await expect(page.getByText(/3포장 → 기준 수량 2,100ml/)).toBeVisible();
+  await page.getByRole("button", { name: "저장" }).click();
+  await expect(page.getByText("재고 기록을 저장했습니다.")).toBeVisible();
+  await expect(page.getByText("2,100ml", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("미입력", { exact: true }).first()).toBeVisible();
 
-  await page.goto("/");
-  await expect(page.getByRole("heading", { name: "운영 현황" })).toBeVisible();
-  await expect(page.getByText("영업손익", { exact: true })).toBeVisible();
-  await expect(page.getByText("부족 재료", { exact: true }).first()).toBeVisible();
+  await page.getByRole("button", { name: "재고 기록" }).click();
+  await page.getByLabel("기록 유형").selectOption("폐기");
+  await page.getByLabel("수량").fill("9999");
+  await page.getByLabel("폐기 사유").selectOption("파손");
+  await expect(page.getByRole("button", { name: "저장" })).toBeDisabled();
+  await expect(page.getByText("재고가 음수가 되어 저장할 수 없습니다")).toBeVisible();
 });

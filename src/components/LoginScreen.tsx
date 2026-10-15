@@ -15,7 +15,9 @@ export function LoginScreen({ onSignedIn }: { onSignedIn: () => Promise<void> })
   async function submit(event: React.FormEvent) {
     event.preventDefault(); setBusy(true); setMessage("");
     const supabase = getSupabase();
-    const result = mode === "login" ? await supabase.auth.signInWithPassword({ email: email.trim(), password }) : await supabase.auth.signUp({ email: email.trim(), password });
+    const result = mode === "login"
+      ? await supabase.auth.signInWithPassword({ email: email.trim(), password })
+      : await supabase.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: window.location.origin } });
     setBusy(false);
     if (result.error) { setMessage(result.error.message); return; }
     if (mode === "signup" && !result.data.session) { setMessage("가입 확인 메일을 보냈습니다. 메일의 확인 링크를 누른 뒤 로그인해 주세요."); setMode("login"); return; }

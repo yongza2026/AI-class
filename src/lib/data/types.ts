@@ -25,6 +25,10 @@ export interface CafeDataset {
   expenses: DataRow[];
   monthlyExpensePlan: DataRow[];
   settings: DataRow[];
+  purchaseLots: DataRow[];
+  productionBatches: DataRow[];
+  bottleStates: DataRow[];
+  auditLog: DataRow[];
 }
 
 export type DatasetTable = Exclude<keyof CafeDataset, "meta">;
@@ -39,7 +43,7 @@ export interface DatasetSummary {
 
 export interface BackupEnvelope {
   backupFormat: "cafe-operations-backup";
-  schemaVersion: 1;
+  schemaVersion: 1 | 2;
   createdAt: string;
   appVersion: string;
   data: CafeDataset;
