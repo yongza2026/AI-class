@@ -6,7 +6,7 @@ import { LogIn } from "lucide-react";
 import { getSupabase } from "@/lib/supabase/client";
 
 export function LoginScreen({ onSignedIn }: { onSignedIn: () => Promise<void> }) {
-  const [email, setEmail] = useState("oran99@ecojv.com");
+  const [email, setEmail] = useState("yong201712@gmail.com");
   const [password, setPassword] = useState("");
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [busy, setBusy] = useState(false);
