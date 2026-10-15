@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { readSummary, storageAvailable } from "@/lib/data/database";
+import { clearDatasetSessionCache, readSummary, storageAvailable } from "@/lib/data/database";
 import type { DatasetSummary } from "@/lib/data/types";
 import { cloudConfigured, getStoreAccess, getSupabase, type StoreAccess } from "@/lib/supabase/client";
 
@@ -28,7 +28,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     } catch (error) { setAccess(null); setSummary(null); setAuthError(error instanceof Error ? error.message : "로그인 정보를 확인하지 못했습니다."); }
     finally { setLoading(false); }
   }, [cloud, refresh]);
-  const signOut = useCallback(async () => { if (cloud) await getSupabase().auth.signOut(); setUserEmail(null); setAccess(null); setSummary(null); setAuthError(""); }, [cloud]);
+  const signOut = useCallback(async () => { if (cloud) await getSupabase().auth.signOut(); clearDatasetSessionCache(); setUserEmail(null); setAccess(null); setSummary(null); setAuthError(""); }, [cloud]);
   useEffect(() => {
     const timer = window.setTimeout(() => { void reloadAuth(); }, 0);
     if (!cloud) return () => window.clearTimeout(timer);

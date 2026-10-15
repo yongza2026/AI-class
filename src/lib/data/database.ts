@@ -3,7 +3,7 @@ import type { CafeDataset, DataRow, DatasetSummary, DatasetTable } from "./types
 import { summarize } from "./schema";
 import { cloudConfigured, getStoreAccess, getSupabase } from "../supabase/client";
 
-type MetaRecord = CafeDataset["meta"] & { id: "current" };
+type MetaRecord = CafeDataset["meta"] & { id: "current"; cloudStoreId?: string };
 
 class CafeDatabase extends Dexie {
   meta!: Table<MetaRecord, string>;
@@ -59,6 +59,8 @@ class CafeDatabase extends Dexie {
 export const db = new CafeDatabase();
 
 const tableNames: DatasetTable[] = ["suppliers", "materials", "menus", "recipes", "priceHistory", "calendar", "sales", "openingInventory", "inventoryEvents", "expenses", "monthlyExpensePlan", "settings", "purchaseLots", "productionBatches", "bottleStates", "auditLog"];
+let cloudCache: { storeId: string; data: CafeDataset } | null = null;
+let cloudReadPromise: Promise<CafeDataset | null> | null = null;
 
 const recordKeys: Record<DatasetTable, string[]> = {
   suppliers: ["supplierId"], materials: ["materialId"], menus: ["menuId"], recipes: ["recipeVersion", "menuId", "materialId"],
@@ -73,11 +75,11 @@ function recordKey(table: DatasetTable, row: DataRow): string {
   return values.join("|");
 }
 
-async function replaceLocalDataset(data: CafeDataset): Promise<void> {
+async function replaceLocalDataset(data: CafeDataset, cloudStoreId?: string): Promise<void> {
   const stores = [db.meta, ...tableNames.map((name) => db.table(name))];
   await db.transaction("rw", stores, async () => {
     await Promise.all(stores.map((table) => table.clear()));
-    await db.meta.put({ id: "current", ...data.meta });
+    await db.meta.put({ id: "current", ...data.meta, cloudStoreId });
     for (const name of tableNames) if (data[name].length) await db.table(name).bulkAdd(data[name]);
   });
 }
@@ -89,9 +91,13 @@ async function clearLocalDataset(): Promise<void> {
 
 export async function replaceDataset(data: CafeDataset): Promise<void> {
   if (cloudConfigured()) {
+    const { storeId } = await getStoreAccess();
     const records = tableNames.flatMap((table) => data[table].map((row) => ({ collection: table, record_key: recordKey(table, row), payload: row })));
     const { error } = await getSupabase().rpc("replace_store_dataset", { p_meta: data.meta, p_records: records });
     if (error) throw new Error(`공용 자료를 교체하지 못했습니다: ${error.message}`);
+    cloudCache = { storeId, data };
+    try { await replaceLocalDataset(data, storeId); } catch { /* 공용 자료 저장 성공 시 브라우저 캐시 실패는 무시한다. */ }
+    return;
   }
   await replaceLocalDataset(data);
 }
@@ -100,7 +106,9 @@ export async function clearSampleDataset(): Promise<void> {
   if (cloudConfigured()) {
     const { error } = await getSupabase().rpc("clear_sample_dataset");
     if (error) throw new Error(`샘플 자료를 삭제하지 못했습니다: ${error.message}`);
-    await clearLocalDataset(); return;
+    cloudCache = null;
+    try { await clearLocalDataset(); } catch { /* 공용 자료 삭제 결과를 우선한다. */ }
+    return;
   }
   const meta = await db.meta.get("current");
   if (!meta || !meta.dataClass.includes("샘플")) {
@@ -114,24 +122,15 @@ export async function clearSampleDataset(): Promise<void> {
 
 export async function readDataset(): Promise<CafeDataset | null> {
   if (cloudConfigured()) {
-    const { storeId } = await getStoreAccess(); const supabase = getSupabase();
-    const { data: dataset, error: metaError } = await supabase.from("store_datasets").select("meta").eq("store_id", storeId).maybeSingle();
-    if (metaError) throw new Error(`공용 자료를 읽지 못했습니다: ${metaError.message}`);
-    if (!dataset) { await clearLocalDataset(); return null; }
-    const rows: { collection: DatasetTable; payload: DataRow }[] = [];
-    for (let from = 0; ; from += 1000) {
-      const { data, error } = await supabase.from("store_records").select("collection,payload").eq("store_id", storeId).range(from, from + 999);
-      if (error) throw new Error(`공용 기록을 읽지 못했습니다: ${error.message}`);
-      rows.push(...((data ?? []) as typeof rows)); if (!data || data.length < 1000) break;
-    }
-    const collections = {} as Record<DatasetTable, DataRow[]>;
-    for (const name of tableNames) collections[name] = [];
-    for (const row of rows) if (tableNames.includes(row.collection)) collections[row.collection].push(row.payload);
-    const remote = { meta: dataset.meta, ...collections } as CafeDataset; await replaceLocalDataset(remote); return remote;
+    const { storeId } = await getStoreAccess();
+    if (cloudCache?.storeId === storeId) return cloudCache.data;
+    if (cloudReadPromise) return cloudReadPromise;
+    cloudReadPromise = readCloudDataset(storeId).finally(() => { cloudReadPromise = null; });
+    return cloudReadPromise;
   }
   const meta = await db.meta.get("current");
   if (!meta) return null;
-  const cleanMeta = Object.fromEntries(Object.entries(meta).filter(([key]) => key !== "id")) as CafeDataset["meta"];
+  const cleanMeta = Object.fromEntries(Object.entries(meta).filter(([key]) => key !== "id" && key !== "cloudStoreId")) as CafeDataset["meta"];
   const entries = await Promise.all(tableNames.map(async (name) => [name, await db.table(name).toArray()] as const));
   return { meta: cleanMeta, ...Object.fromEntries(entries) } as CafeDataset;
 }
@@ -152,6 +151,9 @@ export async function saveRecord(table: DatasetTable, row: DataRow): Promise<voi
     const { storeId } = await getStoreAccess();
     const { error } = await getSupabase().from("store_records").upsert({ store_id: storeId, collection: table, record_key: recordKey(table, row), payload: row });
     if (error) throw new Error(`공용 기록을 저장하지 못했습니다: ${error.message}`);
+    updateCloudCache(table, row);
+    try { await db.table(table).put(row); } catch { /* 공용 자료 저장 성공 시 브라우저 캐시 실패는 무시한다. */ }
+    return;
   }
   await db.table(table).put(row);
 }
@@ -161,6 +163,51 @@ export async function deleteRecord(table: DatasetTable, id: string): Promise<voi
     const { storeId } = await getStoreAccess();
     const { error } = await getSupabase().from("store_records").delete().eq("store_id", storeId).eq("collection", table).eq("record_key", id);
     if (error) throw new Error(`공용 기록을 삭제하지 못했습니다: ${error.message}`);
+    deleteFromCloudCache(table, id);
+    try { await db.table(table).delete(id); } catch { /* 공용 자료 삭제 성공 시 브라우저 캐시 실패는 무시한다. */ }
+    return;
   }
   await db.table(table).delete(id);
+}
+
+async function readCloudDataset(storeId: string): Promise<CafeDataset | null> {
+  const supabase = getSupabase();
+  const { data: dataset, error: metaError } = await supabase.from("store_datasets").select("meta").eq("store_id", storeId).maybeSingle();
+  if (metaError) throw new Error(`공용 자료를 읽지 못했습니다: ${metaError.message}`);
+  if (!dataset) {
+    cloudCache = null;
+    try { await clearLocalDataset(); } catch { /* 빈 공용 저장소 상태를 우선한다. */ }
+    return null;
+  }
+  const rows: { collection: DatasetTable; payload: DataRow }[] = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await supabase.from("store_records").select("collection,payload").eq("store_id", storeId).order("collection").order("record_key").range(from, from + 999);
+    if (error) throw new Error(`공용 기록을 읽지 못했습니다: ${error.message}`);
+    rows.push(...((data ?? []) as typeof rows));
+    if (!data || data.length < 1000) break;
+  }
+  const collections = {} as Record<DatasetTable, DataRow[]>;
+  for (const name of tableNames) collections[name] = [];
+  for (const row of rows) if (tableNames.includes(row.collection)) collections[row.collection].push(row.payload);
+  const remote = { meta: dataset.meta, ...collections } as CafeDataset;
+  cloudCache = { storeId, data: remote };
+  try { await replaceLocalDataset(remote, storeId); } catch { /* 브라우저 캐시는 선택 사항이다. */ }
+  return remote;
+}
+
+function updateCloudCache(table: DatasetTable, row: DataRow): void {
+  if (!cloudCache) return;
+  const key = recordKey(table, row);
+  const nextRows = cloudCache.data[table].filter((existing) => recordKey(table, existing) !== key);
+  cloudCache = { ...cloudCache, data: { ...cloudCache.data, [table]: [...nextRows, row] } };
+}
+
+function deleteFromCloudCache(table: DatasetTable, id: string): void {
+  if (!cloudCache) return;
+  cloudCache = { ...cloudCache, data: { ...cloudCache.data, [table]: cloudCache.data[table].filter((row) => recordKey(table, row) !== id) } };
+}
+
+export function clearDatasetSessionCache(): void {
+  cloudCache = null;
+  cloudReadPromise = null;
 }
