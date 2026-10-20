@@ -26,7 +26,7 @@ const materialSchema = z.object({
   materialId: text, name: text, unit: text, packQuantity: positive, basePackPrice: nonNegative,
   leadDays: z.number().int().nonnegative(), safetyDays: z.number().int().nonnegative(), supplierId: text,
 }).passthrough();
-const menuSchema = z.object({ menuId: text, name: text, price: nonNegative, category: text, recipeVersion: text });
+const menuSchema = z.object({ menuId: text, name: text, price: nonNegative, category: text, recipeVersion: text }).passthrough();
 const recipeSchema = z.object({ recipeVersion: text, menuId: text, materialId: text, quantity: nonNegative, unit: text, channelOnly: z.string().nullable().optional() });
 const priceSchema = z.object({ materialId: text, effectiveDate: dateText, packPrice: nonNegative, packQuantity: positive });
 const calendarSchema = z.object({ date: dateText, isOpen: z.boolean(), recordComplete: z.boolean(), weather: z.string().nullable().optional(), note: z.string().nullable().optional() });
