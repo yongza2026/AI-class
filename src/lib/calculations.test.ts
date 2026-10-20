@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { aggregateProfitability, calculateActualPnl, calculateInventory, calculateSaleSnapshot, forecastPnl, periodFor } from "./calculations";
+import { aggregateMenuProfitability, aggregateProfitability, calculateActualPnl, calculateInventory, calculateSaleSnapshot, forecastPnl, periodFor } from "./calculations";
 import { normalizeExternalJson } from "./data/normalize";
 import { validateDataset } from "./data/schema";
 import type { CafeDataset } from "./data/types";
@@ -33,6 +33,13 @@ describe("집계 계산", () => {
     const rows = aggregateProfitability(data, data.sales.filter((row) => String(row.date).startsWith("2026-09")), "전체");
     expect(rows.length).toBeGreaterThan(0);
     expect(rows[0].contribution).toBeGreaterThanOrEqual(rows[1].contribution);
+  });
+  it("채널을 화면에서 숨겨도 메뉴별 합계는 보존한다", () => {
+    const sales = data.sales.filter((row) => String(row.date).startsWith("2026-09"));
+    const channelRows = aggregateProfitability(data, sales, "전체");
+    const menuRows = aggregateMenuProfitability(data, sales);
+    expect(menuRows.reduce((sum, row) => sum + row.netSales, 0)).toBe(channelRows.reduce((sum, row) => sum + row.netSales, 0));
+    expect(new Set(menuRows.map((row) => row.menuId)).size).toBe(menuRows.length);
   });
   it("재고와 부족·발주 참고량을 계산한다", () => {
     const rows = calculateInventory(data);

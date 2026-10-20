@@ -1,0 +1,13 @@
+create index if not exists allowed_users_store_id_idx on public.allowed_users(store_id);
+create index if not exists store_members_user_id_idx on public.store_members(user_id);
+create index if not exists inventory_items_v2_created_by_idx on public.inventory_items_v2(created_by);
+create index if not exists inventory_items_v2_updated_by_idx on public.inventory_items_v2(updated_by);
+create index if not exists purchase_documents_v2_created_by_idx on public.purchase_documents_v2(created_by);
+create index if not exists purchase_documents_v2_updated_by_idx on public.purchase_documents_v2(updated_by);
+create index if not exists purchase_lines_v2_document_idx on public.purchase_lines_v2(store_id, document_id);
+create index if not exists purchase_lines_v2_item_idx on public.purchase_lines_v2(store_id, item_id);
+create index if not exists stocktake_sessions_v2_created_by_idx on public.stocktake_sessions_v2(created_by);
+create index if not exists stocktake_lines_v2_session_idx on public.stocktake_lines_v2(store_id, session_id);
+create index if not exists stocktake_lines_v2_item_idx on public.stocktake_lines_v2(store_id, item_id);
+create index if not exists inventory_ledger_v2_created_by_idx on public.inventory_ledger_v2(created_by);
+create index if not exists inventory_ledger_v2_reversal_idx on public.inventory_ledger_v2(store_id, reverses_event_id);

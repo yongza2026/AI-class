@@ -5,7 +5,7 @@ import { clearDatasetSessionCache, readSummary, storageAvailable } from "@/lib/d
 import type { DatasetSummary } from "@/lib/data/types";
 import { cloudConfigured, getStoreAccess, getSupabase, type StoreAccess } from "@/lib/supabase/client";
 
-type DataContextValue = { summary: DatasetSummary | null; loading: boolean; supported: boolean; cloud: boolean; userEmail: string | null; access: StoreAccess | null; authError: string; refresh: () => Promise<void>; reloadAuth: () => Promise<void>; signOut: () => Promise<void> };
+type DataContextValue = { summary: DatasetSummary | null; loading: boolean; supported: boolean; cloud: boolean; userEmail: string | null; access: StoreAccess | null; authError: string; passwordRecovery: boolean; refresh: () => Promise<void>; reloadAuth: () => Promise<void>; finishPasswordRecovery: (password: string) => Promise<void>; signOut: () => Promise<void> };
 const DataContext = createContext<DataContextValue | null>(null);
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
@@ -16,6 +16,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [access, setAccess] = useState<StoreAccess | null>(null);
   const [authError, setAuthError] = useState("");
+  const [passwordRecovery, setPasswordRecovery] = useState(false);
   const refresh = useCallback(async () => { setSummary(await readSummary()); }, []);
   const reloadAuth = useCallback(async () => {
     setLoading(true); setAuthError("");
@@ -28,14 +29,27 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     } catch (error) { setAccess(null); setSummary(null); setAuthError(error instanceof Error ? error.message : "로그인 정보를 확인하지 못했습니다."); }
     finally { setLoading(false); }
   }, [cloud, refresh]);
-  const signOut = useCallback(async () => { if (cloud) await getSupabase().auth.signOut(); clearDatasetSessionCache(); setUserEmail(null); setAccess(null); setSummary(null); setAuthError(""); }, [cloud]);
+  const finishPasswordRecovery = useCallback(async (password: string) => {
+    const { error } = await getSupabase().auth.updateUser({ password });
+    if (error) throw new Error(error.message);
+    window.history.replaceState(null, "", window.location.pathname);
+    setPasswordRecovery(false);
+    await reloadAuth();
+  }, [reloadAuth]);
+  const signOut = useCallback(async () => { if (cloud) await getSupabase().auth.signOut(); clearDatasetSessionCache(); for (let index=sessionStorage.length-1;index>=0;index-=1){const key=sessionStorage.key(index);if(key?.startsWith("poco-expense-unlocked:"))sessionStorage.removeItem(key)} setUserEmail(null); setAccess(null); setSummary(null); setAuthError(""); }, [cloud]);
   useEffect(() => {
-    const timer = window.setTimeout(() => { void reloadAuth(); }, 0);
+    const timer = window.setTimeout(() => {
+      if (new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery") setPasswordRecovery(true);
+      void reloadAuth();
+    }, 0);
     if (!cloud) return () => window.clearTimeout(timer);
-    const { data } = getSupabase().auth.onAuthStateChange(() => { void reloadAuth(); });
+    const { data } = getSupabase().auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") setPasswordRecovery(true);
+      void reloadAuth();
+    });
     return () => { window.clearTimeout(timer); data.subscription.unsubscribe(); };
   }, [cloud, reloadAuth]);
-  const value = useMemo(() => ({ summary, loading, supported, cloud, userEmail, access, authError, refresh, reloadAuth, signOut }), [summary, loading, supported, cloud, userEmail, access, authError, refresh, reloadAuth, signOut]);
+  const value = useMemo(() => ({ summary, loading, supported, cloud, userEmail, access, authError, passwordRecovery, refresh, reloadAuth, finishPasswordRecovery, signOut }), [summary, loading, supported, cloud, userEmail, access, authError, passwordRecovery, refresh, reloadAuth, finishPasswordRecovery, signOut]);
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
 

@@ -91,12 +91,13 @@ async function clearLocalDataset(): Promise<void> {
 
 export async function replaceDataset(data: CafeDataset): Promise<void> {
   if (cloudConfigured()) {
-    const { storeId } = await getStoreAccess();
+    const { storeId, role } = await getStoreAccess();
     const records = tableNames.flatMap((table) => data[table].map((row) => ({ collection: table, record_key: recordKey(table, row), payload: row })));
     const { error } = await getSupabase().rpc("replace_store_dataset", { p_meta: data.meta, p_records: records });
     if (error) throw new Error(`공용 자료를 교체하지 못했습니다: ${error.message}`);
-    cloudCache = { storeId, data };
-    try { await replaceLocalDataset(data, storeId); } catch { /* 공용 자료 저장 성공 시 브라우저 캐시 실패는 무시한다. */ }
+    const visibleData = role === "owner" ? data : { ...data, expenses: [], monthlyExpensePlan: [] };
+    cloudCache = { storeId, data: visibleData };
+    try { await replaceLocalDataset(visibleData, storeId); } catch { /* 공용 자료 저장 성공 시 브라우저 캐시 실패는 무시한다. */ }
     return;
   }
   await replaceLocalDataset(data);

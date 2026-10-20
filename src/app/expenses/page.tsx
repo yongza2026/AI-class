@@ -1,2 +1,4 @@
 import { ExpensesManager } from "@/components/ExpensesManager";
-export default function ExpensesPage() { return <ExpensesManager/>; }
+import { ExpenseAccessGate } from "@/components/ExpenseAccessGate";
+
+export default function ExpensesPage() { return <ExpenseAccessGate><ExpensesManager/></ExpenseAccessGate>; }

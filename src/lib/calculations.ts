@@ -66,6 +66,27 @@ export function aggregateProfitability(data: CafeDataset, sales: DataRow[], chan
   return [...grouped.values()].map((row)=>{ row.contribution = money(new Decimal(row.netSales).sub(row.foodCost).sub(row.packagingCost).sub(row.fees)); row.rate=row.netSales===0?null:new Decimal(row.contribution).div(row.netSales).mul(100).toNumber(); row.status=profitStatus(row.rate); return row; }).sort((a,b)=>b.contribution-a.contribution);
 }
 
+export function aggregateMenuProfitability(data: CafeDataset, sales: DataRow[]): ProfitRow[] {
+  const rows = aggregateProfitability(data, sales, "전체");
+  const grouped = new Map<string, ProfitRow>();
+  for (const source of rows) {
+    const row = grouped.get(source.menuId) ?? { ...source, channel: "매장", quantity: 0, netSales: 0, discount: 0, foodCost: 0, packagingCost: 0, fees: 0, contribution: 0, rate: null, status: "" };
+    row.quantity += source.quantity;
+    row.netSales += source.netSales;
+    row.discount += source.discount;
+    row.foodCost += source.foodCost;
+    row.packagingCost += source.packagingCost;
+    row.fees += source.fees;
+    grouped.set(source.menuId, row);
+  }
+  return [...grouped.values()].map((row) => {
+    row.contribution = money(new Decimal(row.netSales).sub(row.foodCost).sub(row.packagingCost).sub(row.fees));
+    row.rate = row.netSales === 0 ? null : new Decimal(row.contribution).div(row.netSales).mul(100).toNumber();
+    row.status = profitStatus(row.rate);
+    return row;
+  }).sort((a, b) => b.contribution - a.contribution);
+}
+
 function profitStatus(rate: number | null) { if (rate===null) return "확인 필요"; if(rate>=80)return"매우 좋음";if(rate>=70)return"좋음";if(rate>=65)return"보통";return"개선 필요"; }
 
 export type InventoryRow = { materialId:string;name:string;unit:string;current:number;lastCount:string|null;dailyUsage:number|null;daysLeft:number|null;target:number|null;shortage:boolean;orderQuantity:number|null;packQuantity:number };
