@@ -62,4 +62,29 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible { 
 .product-import-issues ul{margin:8px 0;padding-left:20px}
 .product-import-issues li{margin:5px 0}
 .cost-management-page > .section-heading{margin-top:40px;margin-bottom:18px}
+.monthly-performance{margin:24px 0;min-width:0}
+.monthly-performance-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.monthly-performance-heading p:not(.eyebrow){margin:4px 0 0;color:var(--muted);font-size:12px}
+.monthly-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:20px 0 14px}
+.monthly-kpis>div{padding:18px;background:#edf3ff;border-left:4px solid var(--blue);min-width:0}
+.monthly-kpis>div:last-child{background:#fff3d6;border-left-color:var(--yellow)}
+.monthly-kpis span,.monthly-kpis small{display:block;font-size:12px;color:var(--muted)}
+.monthly-kpis strong{display:block;font-size:clamp(22px,2.4vw,32px);margin:10px 0;letter-spacing:-.04em;overflow-wrap:anywhere}
+.growth-positive{color:var(--success)}.growth-negative{color:var(--danger)}
+.monthly-period-note,.monthly-data-note{font-size:12px!important;line-height:1.7;color:var(--muted)}
+.monthly-chart-legend{display:flex;flex-wrap:wrap;gap:16px;font-size:11px;margin-top:22px;color:var(--muted)}
+.monthly-chart-legend span{display:flex;align-items:center;gap:6px}.monthly-chart-legend i{display:block;width:10px;height:10px}
+.monthly-current-key{background:var(--blue)}.monthly-previous-key{background:#adb8cb}
+.monthly-chart-scroll{overflow-x:auto;margin:12px 0 22px}
+.monthly-chart{display:grid;grid-template-columns:repeat(12,minmax(42px,1fr));gap:10px;min-width:640px;height:230px;padding:6px 10px 0;background:linear-gradient(to top,transparent 49.8%,#e4e0d8 50%,transparent 50.2%)}
+.monthly-chart-month{display:flex;flex-direction:column;align-items:center;min-width:0}
+.monthly-chart-month>span{font-size:11px;margin-top:7px}.monthly-chart-month>small{font-size:10px;color:var(--muted);margin-top:2px}
+.monthly-chart-bars{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:178px;width:100%;border-bottom:1px solid var(--line)}
+.monthly-chart-bar{width:34%;max-width:22px;background:var(--blue)}.monthly-chart-bar.previous{background:#adb8cb}.monthly-chart-bar.missing{background:transparent;border:1px dashed #8a929f}
+.monthly-chart-month.selected>span{font-weight:800;color:var(--blue)}
+.monthly-performance-table caption{text-align:left;padding:0 0 10px;font-size:11px;color:var(--muted)}
+.monthly-performance-table{min-width:650px}.monthly-selected-row td{background:#edf3ff}
+.monthly-scroll-hint{display:none}
+@media(max-width:600px){.monthly-scroll-hint{display:block;font-size:11px!important;color:var(--blue)!important}}
+@media(max-width:600px){.monthly-performance-heading{flex-direction:column}.monthly-kpis{grid-template-columns:1fr}.monthly-kpis>div{padding:14px}.monthly-kpis strong{font-size:30px}.monthly-performance{padding:16px}}
 @media(max-width:600px){.cost-management-page > .section-heading{margin-top:32px;margin-bottom:16px}}
