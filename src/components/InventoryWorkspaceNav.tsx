@@ -4,9 +4,8 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
 const tabs = [
-  { href: "/inventory", label: "재고 현황" },
+  { href: "/inventory", label: "품목·재고" },
   { href: "/inventory/history", label: "재고 이력" },
-  { href: "/inventory/items", label: "품목 설정" },
 ] as const;
 
 export function InventoryWorkspaceNav() {
@@ -22,6 +21,8 @@ export function InventoryWorkspaceNav() {
   params.delete("event");
   params.delete("return");
   params.delete("material");
+  params.delete("panel");
+  params.delete("new");
   const suffix = params.size ? `?${params.toString()}` : "";
 
   return (

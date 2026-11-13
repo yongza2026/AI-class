@@ -32,7 +32,7 @@ test("빈 매장에서 품목을 만들고 700ml 3병을 입고한다", async ({
   await expect(page.getByText("재고가 음수가 되어 저장할 수 없습니다")).toBeVisible();
 
   await page.goto("/inventory");
-  await page.getByRole("button", { name: /^테스트 진 / }).click();
+  await page.getByRole("button", { name: "테스트 진 상세", exact: true }).click();
   await page.getByRole("link", { name: "구매 정보", exact: true }).click();
   await expect(page).toHaveURL(/costs.*material=/);
   await expect(page.getByRole("heading", { name: "구매·원가", exact: true })).toBeVisible();
