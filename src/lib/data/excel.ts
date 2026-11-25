@@ -17,7 +17,7 @@ export const sheetConfigs: SheetConfig[] = [
   { sheet: "초기재고", section: "openingInventory", columns: [["재료ID","materialId"],["기준일","date"],["재고수량","quantity"],["단위","unit"]].map(([header,key])=>({header,key})) },
   { sheet: "재고기록", section: "inventoryEvents", columns: [["기록ID","eventId"],["일자","date"],["재료ID","materialId"],["유형","eventType"],["증감수량","quantity"],["단위","unit"],["사유","reason"],["입고단위원가","unitCost"],["공급사ID","supplierId"],["실측수량","countedQuantity"]].map(([header,key])=>({header,key})) },
   { sheet: "월비용계획", section: "monthlyExpensePlan", columns: [["귀속월","month"],["비용항목","category"],["월금액","amount"]].map(([header,key])=>({header,key})) },
-  { sheet: "비용기록", section: "expenses", columns: [["비용ID","expenseId"],["귀속일","date"],["비용항목","category"],["금액","amount"],["배분기준","recognition"]].map(([header,key])=>({header,key})) },
+  { sheet: "비용기록", section: "expenses", columns: [["비용ID","expenseId"],["귀속일","date"],["비용항목","category"],["금액","amount"],["배분기준","recognition"],["메모","memo"],["거래처","vendor"]].map(([header,key])=>({header,key})) },
   { sheet: "자료정보", section: "settings", columns: [["구분","group"],["항목","key"],["값","value"]].map(([header,key])=>({header,key})) },
 ];
 
@@ -44,7 +44,7 @@ export async function parseExcel(file: File): Promise<{ data?: CafeDataset; issu
       const rows = byName.get(config.sheet);
       if (!rows) { issues.push({ sheet: config.sheet, message: "필수 시트가 없습니다." }); continue; }
       const headers = (rows[0] ?? []).map(String);
-      config.columns.forEach((column, index) => { if (headers[index] !== column.header) issues.push({ sheet: config.sheet, row: 1, column: column.header, value: headers[index], message: `열 이름과 순서가 달라요. ${index + 1}번째 열은 '${column.header}'이어야 합니다.` }); });
+      config.columns.forEach((column, index) => { if (!(config.section === "expenses" && ["memo", "vendor"].includes(column.key) && headers[index] === undefined) && headers[index] !== column.header) issues.push({ sheet: config.sheet, row: 1, column: column.header, value: headers[index], message: `열 이름과 순서가 달라요. ${index + 1}번째 열은 '${column.header}'이어야 합니다.` }); });
       if (issues.some((issue) => issue.sheet === config.sheet && issue.row === 1)) continue;
       const parsed = rows.slice(1).filter((row) => row.some((value) => value !== null && value !== "")).map((row) => Object.fromEntries(config.columns.map((column, index) => [column.key, cellValue(row[index])]))) as DataRow[];
       if (config.sheet === "자료정보") {
