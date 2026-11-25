@@ -1,3 +1,4 @@
+import { validateExpense } from "../expenseWorkspace";
 import Dexie, { type Table } from "dexie";
 import type { CafeDataset, DataRow, DatasetSummary, DatasetTable } from "./types";
 import { summarize } from "./schema";
@@ -211,4 +212,30 @@ function deleteFromCloudCache(table: DatasetTable, id: string): void {
 export function clearDatasetSessionCache(): void {
   cloudCache = null;
   cloudReadPromise = null;
+}
+
+/** Insert one reviewed batch atomically. Stable IDs make retries idempotent. */
+export async function saveExpenseBatch(rows: DataRow[]): Promise<void> {
+  if (!rows.length || rows.length > 500) throw new Error("비용은 한 번에 1~500건 저장할 수 있습니다.");
+  const ids = new Set<string>();
+  for (const row of rows) {
+    validateExpense(row);
+    const id = recordKey("expenses", row);
+    if (ids.has(id)) throw new Error("일괄 입력에 같은 기록 ID가 있습니다.");
+    ids.add(id);
+  }
+  if (cloudConfigured()) {
+    const { storeId, role } = await getStoreAccess();
+    if (role !== "owner") throw new Error("관리자만 운영비용을 저장할 수 있습니다.");
+    const records = rows.map(row => ({ store_id: storeId, collection: "expenses", record_key: recordKey("expenses", row), payload: row }));
+    const { error } = await getSupabase().from("store_records").upsert(records, { onConflict: "store_id,collection,record_key", ignoreDuplicates: true });
+    if (error) throw new Error(`일괄 저장을 확인하지 못했습니다: ${error.message}`);
+    clearDatasetSessionCache();
+    return;
+  }
+  await db.transaction("rw", db.expenses, async () => {
+    const existing = await db.expenses.bulkGet([...ids]);
+    const newRows = rows.filter((_, index) => !existing[index]);
+    if (newRows.length) await db.expenses.bulkAdd(newRows);
+  });
 }
