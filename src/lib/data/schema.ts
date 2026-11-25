@@ -46,7 +46,7 @@ const eventSchema = z.object({
   if ((row.eventType === "수동사용" || row.eventType === "제조투입") && row.quantity >= 0) context.addIssue({ code: "custom", path: ["quantity"], message: "사용 수량은 음수여야 합니다." });
   if (row.eventType === "실사조정" && row.countedQuantity == null) context.addIssue({ code: "custom", path: ["countedQuantity"], message: "실사조정에는 실측수량이 필요합니다." });
 });
-const expenseSchema = z.object({ expenseId: text, date: dateText, category: text, amount: nonNegative, recognition: text });
+const expenseSchema = z.object({ expenseId: text, date: dateText, category: text, amount: nonNegative, recognition: text, memo: z.string().nullish(), vendor: z.string().nullish() });
 const monthlySchema = z.object({ month: monthText, category: text, amount: nonNegative });
 const settingSchema = z.object({ key: text, value: z.union([z.string(), z.number(), z.boolean(), z.null()]) });
 const looseRowSchema = z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null(), z.undefined()]));
