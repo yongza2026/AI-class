@@ -1,0 +1,45 @@
+.expense-tabs,.expense-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.expense-fieldset{border:0;padding:0;margin:0;min-width:0}
+.expense-entry-table{min-width:960px}
+.expense-entry-table input,.expense-entry-table select{width:100%;min-width:100px}
+.expense-entry-table th:first-child{min-width:210px}
+.expense-entry-table input[inputmode=numeric]{text-align:right}
+.expense-help{font-size:14px;line-height:1.65;color:var(--muted,#65645e);margin:12px 0}
+.expense-paste{padding:16px 0;border-bottom:1px solid #d5d0c4}
+.expense-paste summary{cursor:pointer;font-weight:600}
+.expense-paste textarea,.expense-notes textarea{display:block;width:100%;padding:12px;margin:12px 0;border:1px solid #c8c2b5;border-radius:4px;font:inherit;background:#fffdf7;color:#26251f}
+.expense-saved-group{display:flex;gap:20px;align-items:center;padding:12px 0}
+.expense-text-button{color:inherit;font:inherit;text-decoration:underline;text-underline-offset:4px;background:none;border:0;text-align:left;cursor:pointer}
+.expense-check{display:flex;gap:8px;align-items:center}
+.expense-check input{width:auto}
+.expense-meeting h2{margin:26px 0 14px}
+.expense-meeting table caption{text-align:left;padding:12px;font-size:13px}
+.expense-increases{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.expense-increases article{padding:16px;background:#fffdf7;border:1px solid #d5d0c4}
+.expense-increases p{white-space:pre-wrap;overflow-wrap:anywhere}
+.expense-notes{display:block;margin-top:24px;font-weight:600}
+.expense-print-notes{display:none}
+@media(max-width:700px){
+ .expense-entry-table{min-width:0;width:100%}
+ .expense-entry-table thead{display:none}
+ .expense-entry-table tbody,.expense-entry-table tr{display:block}
+ .expense-entry-table tr{padding:12px;border-bottom:2px solid #d5d0c4}
+ .expense-entry-table td{display:grid;grid-template-columns:100px minmax(0,1fr);gap:8px;border:0;padding:6px 0}
+ .expense-entry-table td:before{content:attr(data-label);font-weight:600}
+ .expense-entry-table small{grid-column:2}
+ .expense-entry-table input,.expense-entry-table select{font-size:16px;min-width:0}
+ .expense-tabs button{flex:1;white-space:nowrap}
+ .expense-saved-group{gap:10px;flex-wrap:wrap}
+}
+@media print{
+ body:has(.expense-meeting) *{visibility:hidden}
+ .expense-meeting,.expense-meeting *{visibility:visible!important}
+ .expense-meeting{position:absolute;left:0;top:0;width:100%;padding:20px;background:white;color:black;font-size:11px}
+ .expense-meeting .no-print,.expense-meeting .expense-notes{display:none!important}
+ .expense-meeting .expense-print-notes{display:block;white-space:pre-wrap;border-top:1px solid #999;padding-top:12px}
+ .expense-meeting .table-wrap{overflow:visible}
+ .expense-meeting table{min-width:0;width:100%}
+ .expense-meeting tr,.expense-meeting .metric-card{break-inside:avoid}
+ .expense-meeting h2{break-after:avoid}
+ .expense-meeting .data-table td,.expense-meeting .data-table th{font-size:10px;padding:6px}
+}
